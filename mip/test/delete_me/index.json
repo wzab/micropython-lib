@@ -1,0 +1,1333 @@
+{
+  "packages": [
+    {
+      "name": "__future__",
+      "version": "0.0.3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.3"
+        ],
+        "6": [
+          "0.0.3"
+        ]
+      }
+    },
+    {
+      "name": "abc",
+      "version": "0.0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.1"
+        ],
+        "6": [
+          "0.0.1"
+        ]
+      }
+    },
+    {
+      "name": "aioble",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-central",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-client",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-core",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-l2cap",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-peripheral",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-security",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aioble-server",
+      "version": "0.2.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "aiorepl",
+      "version": "0.1",
+      "author": "",
+      "description": "Provides an asynchronous REPL that can run concurrently with an asyncio, also allowing await expressions.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "argparse",
+      "version": "0.4",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.4"
+        ],
+        "6": [
+          "0.4"
+        ]
+      }
+    },
+    {
+      "name": "base64",
+      "version": "3.3.3-4",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.3.3-4"
+        ],
+        "6": [
+          "3.3.3-4"
+        ]
+      }
+    },
+    {
+      "name": "binascii",
+      "version": "2.4.0-5",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "2.4.0-5"
+        ],
+        "6": [
+          "2.4.0-5"
+        ]
+      }
+    },
+    {
+      "name": "bmi270",
+      "version": "1.0.0",
+      "author": "",
+      "description": "BOSCH BMI270 IMU driver.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.0.0"
+        ],
+        "6": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "bmm150",
+      "version": "1.0.0",
+      "author": "",
+      "description": "BOSCH BMM150 magnetometer driver.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.0.0"
+        ],
+        "6": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "bundle-networking",
+      "version": "0.1.0",
+      "author": "",
+      "description": "Common networking packages for all network-capable deployments of MicroPython.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "cmd",
+      "version": "3.4.0-2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.4.0-2"
+        ],
+        "6": [
+          "3.4.0-2"
+        ]
+      }
+    },
+    {
+      "name": "collections",
+      "version": "0.1.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.2"
+        ],
+        "6": [
+          "0.1.2"
+        ]
+      }
+    },
+    {
+      "name": "collections-defaultdict",
+      "version": "0.3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.3"
+        ],
+        "6": [
+          "0.3"
+        ]
+      }
+    },
+    {
+      "name": "collections-deque",
+      "version": "0.1.3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.3"
+        ],
+        "6": [
+          "0.1.3"
+        ]
+      }
+    },
+    {
+      "name": "contextlib",
+      "version": "3.4.2-4",
+      "author": "",
+      "description": "Port of contextlib for micropython",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.4.2-4"
+        ],
+        "6": [
+          "3.4.2-4"
+        ]
+      }
+    },
+    {
+      "name": "copy",
+      "version": "3.3.3-2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.3.3-2"
+        ],
+        "6": [
+          "3.3.3-2"
+        ]
+      }
+    },
+    {
+      "name": "curses.ascii",
+      "version": "3.4.2-1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.4.2-1"
+        ],
+        "6": [
+          "3.4.2-1"
+        ]
+      }
+    },
+    {
+      "name": "datetime",
+      "version": "4.0.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "4.0.0"
+        ],
+        "6": [
+          "4.0.0"
+        ]
+      }
+    },
+    {
+      "name": "dht",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "ds18x20",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "errno",
+      "version": "0.1.4",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.4"
+        ],
+        "6": [
+          "0.1.4"
+        ]
+      }
+    },
+    {
+      "name": "espflash",
+      "version": "0.1",
+      "author": "",
+      "description": "Provides a minimal ESP32 bootloader protocol implementation.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "fnmatch",
+      "version": "0.6.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.6.0"
+        ],
+        "6": [
+          "0.6.0"
+        ]
+      }
+    },
+    {
+      "name": "functools",
+      "version": "0.0.7",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.7"
+        ],
+        "6": [
+          "0.0.7"
+        ]
+      }
+    },
+    {
+      "name": "gzip",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "hashlib",
+      "version": "2.4.0-4",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "2.4.0-4"
+        ],
+        "6": [
+          "2.4.0-4"
+        ]
+      }
+    },
+    {
+      "name": "heapq",
+      "version": "0.9.3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.9.3"
+        ],
+        "6": [
+          "0.9.3"
+        ]
+      }
+    },
+    {
+      "name": "hmac",
+      "version": "3.4.2-3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.4.2-3"
+        ],
+        "6": [
+          "3.4.2-3"
+        ]
+      }
+    },
+    {
+      "name": "hs3003",
+      "version": "1.0.0",
+      "author": "",
+      "description": "Renesas HS3003 Humidity and Temperature sensor driver.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.0.0"
+        ],
+        "6": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "html",
+      "version": "3.3.3-2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.3.3-2"
+        ],
+        "6": [
+          "3.3.3-2"
+        ]
+      }
+    },
+    {
+      "name": "hts221",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "inspect",
+      "version": "0.1.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.2"
+        ],
+        "6": [
+          "0.1.2"
+        ]
+      }
+    },
+    {
+      "name": "io",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "iperf3",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "itertools",
+      "version": "0.2.3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.3"
+        ],
+        "6": [
+          "0.2.3"
+        ]
+      }
+    },
+    {
+      "name": "lcd160cr",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "locale",
+      "version": "0.0.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.2"
+        ],
+        "6": [
+          "0.0.2"
+        ]
+      }
+    },
+    {
+      "name": "logging",
+      "version": "0.5",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.5"
+        ],
+        "6": [
+          "0.5"
+        ]
+      }
+    },
+    {
+      "name": "lps22h",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "lsm6dsox",
+      "version": "1.0.0",
+      "author": "",
+      "description": "ST LSM6DSOX imu driver.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.0.0"
+        ],
+        "6": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "lsm9ds1",
+      "version": "1.0.0",
+      "author": "",
+      "description": "Driver for ST LSM9DS1 IMU.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.0.0"
+        ],
+        "6": [
+          "1.0.0"
+        ]
+      }
+    },
+    {
+      "name": "mhz19",
+      "version": "0.1.0",
+      "author": "",
+      "description": "Driver for MH-Z19 CO2 sensor.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "mip",
+      "version": "0.2.0",
+      "author": "",
+      "description": "On-device package installer for network-capable boards",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.0"
+        ],
+        "6": [
+          "0.2.0"
+        ]
+      }
+    },
+    {
+      "name": "mip-cmdline",
+      "version": "0.1.0",
+      "author": "",
+      "description": "Optional support for running `micropython -m mip`",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "neopixel",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "nrf24l01",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "ntptime",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "onewire",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "operator",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "os",
+      "version": "0.6",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.6"
+        ],
+        "6": [
+          "0.6"
+        ]
+      }
+    },
+    {
+      "name": "os-path",
+      "version": "0.1.4",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.4"
+        ],
+        "6": [
+          "0.1.4"
+        ]
+      }
+    },
+    {
+      "name": "pathlib",
+      "version": "0.0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.1"
+        ],
+        "6": [
+          "0.0.1"
+        ]
+      }
+    },
+    {
+      "name": "pickle",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "pkg_resources",
+      "version": "0.2.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2.1"
+        ],
+        "6": [
+          "0.2.1"
+        ]
+      }
+    },
+    {
+      "name": "pkgutil",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "pprint",
+      "version": "0.0.4",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.4"
+        ],
+        "6": [
+          "0.0.4"
+        ]
+      }
+    },
+    {
+      "name": "pyjwt",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "quopri",
+      "version": "0.5.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.5.1"
+        ],
+        "6": [
+          "0.5.1"
+        ]
+      }
+    },
+    {
+      "name": "random",
+      "version": "0.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2"
+        ],
+        "6": [
+          "0.2"
+        ]
+      }
+    },
+    {
+      "name": "sdcard",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "shutil",
+      "version": "0.0.5",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.5"
+        ],
+        "6": [
+          "0.0.5"
+        ]
+      }
+    },
+    {
+      "name": "ssd1306",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "ssl",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "stat",
+      "version": "0.5.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.5.1"
+        ],
+        "6": [
+          "0.5.1"
+        ]
+      }
+    },
+    {
+      "name": "string",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "struct",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "tempfile",
+      "version": "0.0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.0.1"
+        ],
+        "6": [
+          "0.0.1"
+        ]
+      }
+    },
+    {
+      "name": "textwrap",
+      "version": "3.4.2-1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "3.4.2-1"
+        ],
+        "6": [
+          "3.4.2-1"
+        ]
+      }
+    },
+    {
+      "name": "threading",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "time",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "traceback",
+      "version": "0.3",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.3"
+        ],
+        "6": [
+          "0.3"
+        ]
+      }
+    },
+    {
+      "name": "uaiohttpclient",
+      "version": "0.5.1",
+      "author": "",
+      "description": "HTTP client module for MicroPython uasyncio module",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.5.1"
+        ],
+        "6": [
+          "0.5.1"
+        ]
+      }
+    },
+    {
+      "name": "ucontextlib",
+      "version": "0.1.1",
+      "author": "",
+      "description": "Minimal subset of contextlib for MicroPython low-memory ports",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "udnspkt",
+      "version": "0.1",
+      "author": "",
+      "description": "Make and parse DNS packets (Sans I/O approach).",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
+      "name": "umqtt.robust",
+      "version": "1.0.2",
+      "author": "",
+      "description": "Lightweight MQTT client for MicroPython (\"robust\" version).",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.0.2"
+        ],
+        "6": [
+          "1.0.2"
+        ]
+      }
+    },
+    {
+      "name": "umqtt.simple",
+      "version": "1.3.4",
+      "author": "",
+      "description": "Lightweight MQTT client for MicroPython.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "1.3.4"
+        ],
+        "6": [
+          "1.3.4"
+        ]
+      }
+    },
+    {
+      "name": "unittest",
+      "version": "0.10.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.10.2"
+        ],
+        "6": [
+          "0.10.2"
+        ]
+      }
+    },
+    {
+      "name": "unittest-discover",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "upysh",
+      "version": "0.6.1",
+      "author": "",
+      "description": "Minimalistic file shell using native Python syntax.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.6.1"
+        ],
+        "6": [
+          "0.6.1"
+        ]
+      }
+    },
+    {
+      "name": "urequests",
+      "version": "0.7.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.7.0"
+        ],
+        "6": [
+          "0.7.0"
+        ]
+      }
+    },
+    {
+      "name": "urllib.urequest",
+      "version": "0.6",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.6"
+        ],
+        "6": [
+          "0.6"
+        ]
+      }
+    },
+    {
+      "name": "utarfile",
+      "version": "0.3.2",
+      "author": "",
+      "description": "Lightweight tarfile module subset",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.3.2"
+        ],
+        "6": [
+          "0.3.2"
+        ]
+      }
+    },
+    {
+      "name": "uu",
+      "version": "0.5.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.5.1"
+        ],
+        "6": [
+          "0.5.1"
+        ]
+      }
+    },
+    {
+      "name": "venv",
+      "version": "0.1.0",
+      "author": "",
+      "description": "Support for creating MicroPython virtual environments using `micropython -m venv`",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "warnings",
+      "version": "0.1.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.1"
+        ],
+        "6": [
+          "0.1.1"
+        ]
+      }
+    },
+    {
+      "name": "webrepl",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "wm8960",
+      "version": "",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {}
+    },
+    {
+      "name": "xmltok",
+      "version": "0.2",
+      "author": "",
+      "description": "Simple XML tokenizer",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.2"
+        ],
+        "6": [
+          "0.2"
+        ]
+      }
+    }
+  ],
+  "v": 1,
+  "updated": 1677142721
+}
