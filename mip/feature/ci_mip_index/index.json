@@ -32,31 +32,31 @@
     },
     {
       "name": "aioble",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.2.0"
+          "0.2.1"
         ],
         "6": [
-          "0.2.0"
+          "0.2.1"
         ]
       }
     },
     {
       "name": "aioble-central",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.2.0"
+          "0.2.1"
         ],
         "6": [
-          "0.2.0"
+          "0.2.1"
         ]
       }
     },
@@ -245,6 +245,21 @@
       "version": "0.1.0",
       "author": "",
       "description": "Common networking packages for all network-capable deployments of MicroPython.",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "cbor2",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
       "license": "MIT",
       "versions": {
         "py": [
@@ -929,6 +944,21 @@
       "versions": {}
     },
     {
+      "name": "senml",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
       "name": "shutil",
       "version": "0.0.5",
       "author": "",
@@ -1329,5 +1359,5 @@
     }
   ],
   "v": 1,
-  "updated": 1677225549
+  "updated": 1677735987
 }
