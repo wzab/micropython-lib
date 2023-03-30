@@ -222,19 +222,10 @@ _IRQ_DRIVER_RX_MASK = const(
 )
 
 
-class SX127x(BaseModem):
-    # Note: Currently the LoRa module defines SX1276, SX1277, SX1278 and SX1279
-    # as different classes (set up in __init__.py) but they are actually all
-    # this class. Perhaps in the future some subclasses with software enforced
-    # limits can be added to this driver, but the differences appear very minor:
-    #
-    # - SX1276 seems like "baseline" with max freq.
-    # - SX1277 supports max SF level of 9.
-    # - SX1278 supports max freq 525MHz, therefore has no RFO_HF and RFI_HF pins.
-    # - SX1279 supports max freq 960MHz.
-    #
-    # There also appears to be no difference in silicon interface or register values to determine
-    # which model is connected.
+class _SX127x(BaseModem):
+    # Don't instantiate this class directly, instantiate either lora.SX1276,
+    #  lora.SX1277, lora.SX1278, lora.SX1279, or lora.AsyncSX1276,
+    #  lora.AsyncSX1277, lora.AsyncSX1278, lora.AsyncSX1279 as applicable.
 
     # common IRQ masks used by the base class functions
     _IRQ_RX_COMPLETE = _IRQ_RX_DONE | _IRQ_RX_TIMEOUT
@@ -850,6 +841,45 @@ class SX127x(BaseModem):
 
     def _irq_flag_tx_done(self):
         return _IRQ_TX_DONE
+
+
+# Define the actual modem classes that use the SyncModem & AsyncModem "mixin-like" classes
+# to create sync and async variants.
+
+try:
+    from .sync_modem import SyncModem
+
+    class SX1276(_SX127x, SyncModem):
+        pass
+
+    # Implementation note: Currently the classes SX1276, SX1277, SX1278 and
+    # SX1279 are actually all SX1276. Perhaps in the future some subclasses with
+    # software enforced limits can be added to this driver, but the differences
+    # appear very minor:
+    #
+    # - SX1276 seems like "baseline" with max freq.
+    # - SX1277 supports max SF level of 9.
+    # - SX1278 supports max freq 525MHz, therefore has no RFO_HF and RFI_HF pins.
+    # - SX1279 supports max freq 960MHz.
+    #
+    # There also appears to be no difference in silicon interface or register values to determine
+    # which model is connected.
+    SX1277 = SX1278 = SX1279 = SX1276
+
+except ImportError:
+    pass
+
+try:
+    from .async_modem import AsyncModem
+
+    class AsyncSX1276(_SX127x, AsyncModem):
+        pass
+
+    # See comment above about currently identical implementations
+    AsyncSX1277 = AsyncSX1278 = AsyncSX1279 = AsyncSX1276
+
+except ImportError:
+    pass
 
 
 __version__ = '0.1'

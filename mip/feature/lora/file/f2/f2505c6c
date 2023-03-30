@@ -110,7 +110,7 @@ _CALIBRATE_TIMEOUT_US = const(30000)
 _CONTINUOUS_TIMEOUT_VAL = const(0xFFFFFF)
 
 
-class SX126x(BaseModem):
+class _SX126x(BaseModem):
     # common IRQ masks used by the base class functions
     _IRQ_RX_COMPLETE = _IRQ_RX_DONE | _IRQ_TIMEOUT
     _IRQ_TX_COMPLETE = _IRQ_TX_DONE
@@ -118,7 +118,8 @@ class SX126x(BaseModem):
     # Common base class for SX1261, SX1262 and (pending) STM32WL55. These are all basically
     # the same except for which PA ranges are supported
     #
-    # Don't construct this directly, construct SX1261 or SX1262
+    # Don't construct this directly, construct lora.SX1261, lora.SX1262, lora.AsyncSX1261
+    # or lora.AsyncSX1262
     def __init__(
         self,
         spi,
@@ -720,7 +721,8 @@ class SX126x(BaseModem):
         return self._cmd("BBBB", _CMD_WRITE_REGISTER, addr >> 8, addr & 0xFF, val & 0xFF)
 
 
-class SX1262(SX126x):
+class _SX1262(_SX126x):
+    # Don't construct this directly, construct lora.SX1262 or lora.AsyncSX1262
     def __init__(
         self,
         spi,
@@ -793,7 +795,8 @@ class SX1262(SX126x):
             return (DEFAULT, output_power & 0xFF)
 
 
-class SX1261(SX126x):
+class _SX1261(_SX126x):
+    # Don't construct this directly, construct lora.SX1261, or lora.AsyncSX1261
     def __init__(
         self,
         spi,
@@ -854,6 +857,34 @@ class SX1261(SX126x):
         else:
             # Nominal values, as per Semtech driver
             return (DEFAULT, output_power & 0xFF)
+
+
+# Define the actual modem classes that use the SyncModem & AsyncModem "mixin-like" classes
+# to create sync and async variants.
+
+try:
+    from .sync_modem import SyncModem
+
+    class SX1261(_SX1261, SyncModem):
+        pass
+
+    class SX1262(_SX1262, SyncModem):
+        pass
+
+except ImportError:
+    pass
+
+try:
+    from .async_modem import AsyncModem
+
+    class AsyncSX1261(_SX1261, AsyncModem):
+        pass
+
+    class AsyncSX1262(_SX1262, AsyncModem):
+        pass
+
+except ImportError:
+    pass
 
 
 __version__ = '0.1'

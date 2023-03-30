@@ -18,18 +18,22 @@ _TX_POLL_LATE_IRQ = const(10)
 
 
 class AsyncModem:
-    def __init__(self, modem):
-        self._modem = modem
+    # Mixin-like base class that provides coroutines for modem send, recv & recv_continuous.
+    #
+    # Don't instantiate this class directly, instantiate one of the 'AsyncXYZ'
+    # modem classes defined in the lora module.
+
+    def _after_init(self):
         # Separate flags for (rx, tx) as only one task can block on a flag
         self._flags = (uasyncio.ThreadSafeFlag(), uasyncio.ThreadSafeFlag())
-        self._modem.set_irq_callback(self._callback)
+        self.set_irq_callback(self._callback)
 
     async def recv(self, timeout_ms=None, rx_length=0xFF, rx_packet=None):
         # Async function to receive a single LoRa packet, with an optional timeout
         #
         # Same API as the "Simple API" synchronous function
         self._flags[0].clear()
-        will_irq = self._modem.start_recv(timeout_ms, False, rx_length)
+        will_irq = self.start_recv(timeout_ms, False, rx_length)
         return await self._recv(will_irq, rx_packet)
 
     def recv_continuous(self, rx_length=0xFF, rx_packet=None):
@@ -40,7 +44,7 @@ class AsyncModem:
         # fiddly implementation can probably be merged with recv() into a much simpler
         # single _recv() private coro that either yields or returns, depending on
         # an argument. The public API can stay the same.
-        will_irq = self._modem.start_recv(None, True, rx_length)
+        will_irq = self.start_recv(None, True, rx_length)
         return AsyncContinuousReceiver(self, will_irq, rx_packet)
 
     async def _recv(self, will_irq, rx_packet):
@@ -49,25 +53,25 @@ class AsyncModem:
         rx = True
         while rx is True:
             await self._wait(will_irq, 0, _RX_POLL_WITH_IRQ if will_irq else _RX_POLL_NO_IRQ)
-            rx = self._modem.poll_recv(rx_packet)
+            rx = self.poll_recv(rx_packet)
         if rx:  # RxPacket instance
             return rx
 
     async def send(self, packet, tx_at_ms=None):
         self._flags[1].clear()
-        self._modem.prepare_send(packet)
+        self.prepare_send(packet)
 
         timeout_ms = self.get_time_on_air_us(len(packet))
 
         if tx_at_ms is not None:
             await uasyncio.sleep_ms(max(0, utime.ticks_diff(tx_at_ms, utime.ticks_ms())))
 
-        will_irq = self._modem.start_send()
+        will_irq = self.start_send()
 
         tx = True
         while tx is True:
             await self._wait(will_irq, 1, timeout_ms)
-            tx = self._modem.poll_send()
+            tx = self.poll_send()
 
             # If we've already waited the estimated send time and the modem
             # is not done, timeout and poll more rapidly from here on (unsure if
@@ -106,29 +110,6 @@ class AsyncModem:
         # IRQ flags, for example).
         for f in self._flags:
             f.set()
-
-    # Wrappers for common API calls on the inner modem object
-
-    def configure(self, lora_cfg):
-        return self._modem.configure(lora_cfg)
-
-    def standby(self):
-        self._modem.standby()
-
-    def sleep(self):
-        self._modem.sleep()
-
-    def calibrate(self):
-        self._modem.calibrate()
-
-    def calibrate_image(self):
-        self._modem.calibrate_image()
-
-    def is_idle(self):
-        return self._modem.is_idle()
-
-    def get_time_on_air_us(self, payload_len):
-        return self._modem.get_time_on_air_us(payload_len)
 
 
 class AsyncContinuousReceiver:

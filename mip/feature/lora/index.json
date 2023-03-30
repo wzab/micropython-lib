@@ -723,6 +723,21 @@
       }
     },
     {
+      "name": "lora-sync",
+      "version": "0.1",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
+        ]
+      }
+    },
+    {
       "name": "lps22h",
       "version": "",
       "author": "",
@@ -1426,5 +1441,5 @@
     }
   ],
   "v": 1,
-  "updated": 1680151040
+  "updated": 1680159627
 }
