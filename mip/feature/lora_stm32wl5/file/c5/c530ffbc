@@ -1,0 +1,4 @@
+from ._sha512 import sha384
+
+
+__version__ = '2.4.0-4'
