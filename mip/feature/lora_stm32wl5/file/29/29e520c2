@@ -11,6 +11,7 @@ from micropython import const
 
 _CMD_CLR_ERRORS = const(0x07)
 
+_REG_OCP = const(0x8E7)
 
 # Default antenna switch config is as per Nucleo WL-55 board. See UM2592 Fig 18.
 # Possible to work with other antenna switch board configurations by passing
@@ -26,7 +27,7 @@ class NucleoWL55RFConfig:
             pin(val)
 
     def rx(self):
-        self._set_fe_ctrl((0, 1, 0))
+        self._set_fe_ctrl((1, 0, 1))
 
     def tx(self, hp):
         self._set_fe_ctrl((0 if hp else 1, 1, 1))
@@ -35,7 +36,7 @@ class NucleoWL55RFConfig:
         pass
 
 
-class _WL55SubGhzModem(sx126x._SX1262):
+class _WL55SubGhzModem(sx126x._SX126x):
     # Don't construct this directly, construct lora.WL55SubGhzModem or lora.AsyncWL55SubGHzModem
     def __init__(
         self,
@@ -45,6 +46,7 @@ class _WL55SubGhzModem(sx126x._SX1262):
         ant_sw=NucleoWL55RFConfig,
     ):
         self._r = machine.SubGHzRadio(external_hse32)
+        self._hp = False
 
         if ant_sw == NucleoWL55RFConfig:
             # To avoid the default argument being an object instance
@@ -55,10 +57,12 @@ class _WL55SubGhzModem(sx126x._SX1262):
             self._r.cs,
             self._r.is_busy,
             self._r,  # dio1
-            dio2_rf_sw=False,
-            dio3_tcxo_millivolts=tcxo_millivolts,
-            lora_cfg=lora_cfg,
-            ant_sw=ant_sw,
+            False,  # dio2_rf_sw
+            tcxo_millivolts,  # dio3_tcxo_millivolts
+            1000,  # dio3_tcxo_start_time_us
+            None,  # reset
+            lora_cfg,
+            ant_sw,
         )
 
     def _clear_errors(self):
@@ -75,6 +79,32 @@ class _WL55SubGhzModem(sx126x._SX1262):
         # SubGHZ Radio Hardware IRQ requires manual re-enabling after interrupt
         # flags cleared
         self._r.irq_en(True)
+
+    def _tx_hp(self):
+        # STM32WL5 supports both High and Low Power antenna pins depending on tx_ant setting
+        return self._hp
+
+    def _get_pa_tx_params(self, output_power, tx_ant):
+        # Given an output power level in dBm and the tx_ant setting (if any),
+        # return settings for SetPaConfig and SetTxParams.
+        #
+        # ST document RM0453 Set_PaConfig() reference and accompanying Table 35
+        # show values that are an exact superset of the SX1261 and SX1262
+        # available values, depending on which antenna pin is to be
+        # used. Therefore, call either modem's existing _get_pa_tx_params()
+        # function depending on the current tx_ant setting (default is low
+        # power).
+
+        if tx_ant is not None:
+            self._hp = tx_ant == "PA_BOOST"
+
+        # Update the OCP register to match the maximum power level
+        self._reg_write(_REG_OCP, 0x38 if self._hp else 0x18)
+
+        if self._hp:
+            return sx126x._SX1262._get_pa_tx_params(self, output_power, tx_ant)
+        else:
+            return sx126x._SX1261._get_pa_tx_params(self, output_power, tx_ant)
 
 
 # Define the actual modem classes that use the SyncModem & AsyncModem "mixin-like" classes
