@@ -5,7 +5,7 @@
       "version": "0.0.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.3",
       "versions": {
         "py": [
           "0.0.3"
@@ -20,7 +20,7 @@
       "version": "0.0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.1",
       "versions": {
         "py": [
           "0.0.1"
@@ -32,16 +32,16 @@
     },
     {
       "name": "aioble",
-      "version": "0.2.1",
+      "version": "0.3.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.3.1",
       "versions": {
         "py": [
-          "0.2.1"
+          "0.3.1"
         ],
         "6": [
-          "0.2.1"
+          "0.3.1"
         ]
       }
     },
@@ -50,7 +50,7 @@
       "version": "0.2.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.1",
       "versions": {
         "py": [
           "0.2.1"
@@ -62,16 +62,16 @@
     },
     {
       "name": "aioble-client",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.3.0",
       "versions": {
         "py": [
-          "0.2.0"
+          "0.3.0"
         ],
         "6": [
-          "0.2.0"
+          "0.3.0"
         ]
       }
     },
@@ -80,7 +80,7 @@
       "version": "0.2.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.0",
       "versions": {
         "py": [
           "0.2.0"
@@ -95,7 +95,7 @@
       "version": "0.2.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.0",
       "versions": {
         "py": [
           "0.2.0"
@@ -110,7 +110,7 @@
       "version": "0.2.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.0",
       "versions": {
         "py": [
           "0.2.0"
@@ -125,7 +125,7 @@
       "version": "0.2.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.0",
       "versions": {
         "py": [
           "0.2.0"
@@ -137,16 +137,31 @@
     },
     {
       "name": "aioble-server",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.3.0",
       "versions": {
         "py": [
-          "0.2.0"
+          "0.3.0"
         ],
         "6": [
-          "0.2.0"
+          "0.3.0"
+        ]
+      }
+    },
+    {
+      "name": "aioespnow",
+      "version": "0.1",
+      "author": "",
+      "description": "Extends the micropython espnow module with methods to support asyncio.",
+      "license": "0.1",
+      "versions": {
+        "py": [
+          "0.1"
+        ],
+        "6": [
+          "0.1"
         ]
       }
     },
@@ -155,7 +170,7 @@
       "version": "0.1",
       "author": "",
       "description": "Provides an asynchronous REPL that can run concurrently with an asyncio, also allowing await expressions.",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -170,7 +185,7 @@
       "version": "0.4",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.4",
       "versions": {
         "py": [
           "0.4"
@@ -185,7 +200,7 @@
       "version": "3.3.3-4",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.3.3-4",
       "versions": {
         "py": [
           "3.3.3-4"
@@ -200,7 +215,7 @@
       "version": "2.4.0-5",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "2.4.0-5",
       "versions": {
         "py": [
           "2.4.0-5"
@@ -215,7 +230,7 @@
       "version": "1.0.0",
       "author": "",
       "description": "BOSCH BMI270 IMU driver.",
-      "license": "MIT",
+      "license": "1.0.0",
       "versions": {
         "py": [
           "1.0.0"
@@ -230,7 +245,7 @@
       "version": "1.0.0",
       "author": "",
       "description": "BOSCH BMM150 magnetometer driver.",
-      "license": "MIT",
+      "license": "1.0.0",
       "versions": {
         "py": [
           "1.0.0"
@@ -245,7 +260,7 @@
       "version": "0.1.0",
       "author": "",
       "description": "Common networking packages for all network-capable deployments of MicroPython.",
-      "license": "MIT",
+      "license": "0.1.0",
       "versions": {
         "py": [
           "0.1.0"
@@ -260,7 +275,7 @@
       "version": "0.1.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.0",
       "versions": {
         "py": [
           "0.1.0"
@@ -275,7 +290,7 @@
       "version": "3.4.0-2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.4.0-2",
       "versions": {
         "py": [
           "3.4.0-2"
@@ -290,7 +305,7 @@
       "version": "0.1.2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.2",
       "versions": {
         "py": [
           "0.1.2"
@@ -305,7 +320,7 @@
       "version": "0.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.3",
       "versions": {
         "py": [
           "0.3"
@@ -320,7 +335,7 @@
       "version": "0.1.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.3",
       "versions": {
         "py": [
           "0.1.3"
@@ -335,7 +350,7 @@
       "version": "3.4.2-4",
       "author": "",
       "description": "Port of contextlib for micropython",
-      "license": "MIT",
+      "license": "3.4.2-4",
       "versions": {
         "py": [
           "3.4.2-4"
@@ -350,7 +365,7 @@
       "version": "3.3.3-2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.3.3-2",
       "versions": {
         "py": [
           "3.3.3-2"
@@ -365,7 +380,7 @@
       "version": "3.4.2-1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.4.2-1",
       "versions": {
         "py": [
           "3.4.2-1"
@@ -380,7 +395,7 @@
       "version": "4.0.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "4.0.0",
       "versions": {
         "py": [
           "4.0.0"
@@ -392,26 +407,40 @@
     },
     {
       "name": "dht",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "DHT11 & DHT22 temperature/humidity sensor driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "ds18x20",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "DS18x20 temperature sensor driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "errno",
       "version": "0.1.4",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.4",
       "versions": {
         "py": [
           "0.1.4"
@@ -426,7 +455,7 @@
       "version": "0.1",
       "author": "",
       "description": "Provides a minimal ESP32 bootloader protocol implementation.",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -441,7 +470,7 @@
       "version": "0.6.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.6.0",
       "versions": {
         "py": [
           "0.6.0"
@@ -456,7 +485,7 @@
       "version": "0.0.7",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.7",
       "versions": {
         "py": [
           "0.0.7"
@@ -471,7 +500,7 @@
       "version": "0.1.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -486,7 +515,7 @@
       "version": "2.4.0-4",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "2.4.0-4",
       "versions": {
         "py": [
           "2.4.0-4"
@@ -501,7 +530,7 @@
       "version": "0.9.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.9.3",
       "versions": {
         "py": [
           "0.9.3"
@@ -516,7 +545,7 @@
       "version": "3.4.2-3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.4.2-3",
       "versions": {
         "py": [
           "3.4.2-3"
@@ -531,7 +560,7 @@
       "version": "1.0.0",
       "author": "",
       "description": "Renesas HS3003 Humidity and Temperature sensor driver.",
-      "license": "MIT",
+      "license": "1.0.0",
       "versions": {
         "py": [
           "1.0.0"
@@ -546,7 +575,7 @@
       "version": "3.3.3-2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.3.3-2",
       "versions": {
         "py": [
           "3.3.3-2"
@@ -558,18 +587,25 @@
     },
     {
       "name": "hts221",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "HTS221 temperature/humidity sensor driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "inspect",
       "version": "0.1.2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.2",
       "versions": {
         "py": [
           "0.1.2"
@@ -584,7 +620,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -599,7 +635,7 @@
       "version": "0.1.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.3",
       "versions": {
         "py": [
           "0.1.3"
@@ -614,7 +650,7 @@
       "version": "0.2.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.3",
       "versions": {
         "py": [
           "0.2.3"
@@ -626,18 +662,25 @@
     },
     {
       "name": "lcd160cr",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "LCD160CR driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "locale",
       "version": "0.0.2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.2",
       "versions": {
         "py": [
           "0.0.2"
@@ -652,7 +695,7 @@
       "version": "0.5",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.5",
       "versions": {
         "py": [
           "0.5"
@@ -667,7 +710,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -682,7 +725,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -697,7 +740,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -712,7 +755,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -727,7 +770,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -739,18 +782,25 @@
     },
     {
       "name": "lps22h",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "LPS22H temperature/pressure sensor driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "lsm6dsox",
       "version": "1.0.0",
       "author": "",
       "description": "ST LSM6DSOX imu driver.",
-      "license": "MIT",
+      "license": "1.0.0",
       "versions": {
         "py": [
           "1.0.0"
@@ -765,7 +815,7 @@
       "version": "1.0.0",
       "author": "",
       "description": "Driver for ST LSM9DS1 IMU.",
-      "license": "MIT",
+      "license": "1.0.0",
       "versions": {
         "py": [
           "1.0.0"
@@ -780,7 +830,7 @@
       "version": "0.1.0",
       "author": "",
       "description": "Driver for MH-Z19 CO2 sensor.",
-      "license": "MIT",
+      "license": "0.1.0",
       "versions": {
         "py": [
           "0.1.0"
@@ -795,7 +845,7 @@
       "version": "0.2.0",
       "author": "",
       "description": "On-device package installer for network-capable boards",
-      "license": "MIT",
+      "license": "0.2.0",
       "versions": {
         "py": [
           "0.2.0"
@@ -810,7 +860,7 @@
       "version": "0.1.0",
       "author": "",
       "description": "Optional support for running `micropython -m mip`",
-      "license": "MIT",
+      "license": "0.1.0",
       "versions": {
         "py": [
           "0.1.0"
@@ -822,42 +872,70 @@
     },
     {
       "name": "neopixel",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "WS2812/NeoPixel driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "nrf24l01",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "nrf24l01 2.4GHz radio driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "ntptime",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "NTP client.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "onewire",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "Onewire driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "operator",
       "version": "0.1.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -872,7 +950,7 @@
       "version": "0.6",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.6",
       "versions": {
         "py": [
           "0.6"
@@ -887,7 +965,7 @@
       "version": "0.1.4",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.4",
       "versions": {
         "py": [
           "0.1.4"
@@ -902,7 +980,7 @@
       "version": "0.0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.1",
       "versions": {
         "py": [
           "0.0.1"
@@ -917,7 +995,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -932,7 +1010,7 @@
       "version": "0.2.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2.1",
       "versions": {
         "py": [
           "0.2.1"
@@ -947,7 +1025,7 @@
       "version": "0.1.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -962,7 +1040,7 @@
       "version": "0.0.4",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.4",
       "versions": {
         "py": [
           "0.0.4"
@@ -977,7 +1055,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -992,7 +1070,7 @@
       "version": "0.5.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.5.1",
       "versions": {
         "py": [
           "0.5.1"
@@ -1007,7 +1085,7 @@
       "version": "0.2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.2",
       "versions": {
         "py": [
           "0.2"
@@ -1019,18 +1097,25 @@
     },
     {
       "name": "sdcard",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "SDCard block device driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "senml",
       "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
+      "description": "SenML serialisation for MicroPython.",
+      "license": "0.1.0",
       "versions": {
         "py": [
           "0.1.0"
@@ -1045,7 +1130,7 @@
       "version": "0.0.5",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.5",
       "versions": {
         "py": [
           "0.0.5"
@@ -1057,18 +1142,25 @@
     },
     {
       "name": "ssd1306",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "SSD1306 OLED driver.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "ssl",
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -1083,7 +1175,7 @@
       "version": "0.5.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.5.1",
       "versions": {
         "py": [
           "0.5.1"
@@ -1098,7 +1190,7 @@
       "version": "0.1.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -1113,7 +1205,7 @@
       "version": "0.1.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -1128,7 +1220,7 @@
       "version": "0.0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.0.1",
       "versions": {
         "py": [
           "0.0.1"
@@ -1143,7 +1235,7 @@
       "version": "3.4.2-1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "3.4.2-1",
       "versions": {
         "py": [
           "3.4.2-1"
@@ -1158,7 +1250,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -1173,7 +1265,7 @@
       "version": "0.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -1188,7 +1280,7 @@
       "version": "0.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.3",
       "versions": {
         "py": [
           "0.3"
@@ -1203,7 +1295,7 @@
       "version": "0.5.1",
       "author": "",
       "description": "HTTP client module for MicroPython uasyncio module",
-      "license": "MIT",
+      "license": "0.5.1",
       "versions": {
         "py": [
           "0.5.1"
@@ -1218,7 +1310,7 @@
       "version": "0.1.1",
       "author": "",
       "description": "Minimal subset of contextlib for MicroPython low-memory ports",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -1233,7 +1325,7 @@
       "version": "0.1",
       "author": "",
       "description": "Make and parse DNS packets (Sans I/O approach).",
-      "license": "MIT",
+      "license": "0.1",
       "versions": {
         "py": [
           "0.1"
@@ -1248,7 +1340,7 @@
       "version": "1.0.2",
       "author": "",
       "description": "Lightweight MQTT client for MicroPython (\"robust\" version).",
-      "license": "MIT",
+      "license": "1.0.2",
       "versions": {
         "py": [
           "1.0.2"
@@ -1263,7 +1355,7 @@
       "version": "1.3.4",
       "author": "",
       "description": "Lightweight MQTT client for MicroPython.",
-      "license": "MIT",
+      "license": "1.3.4",
       "versions": {
         "py": [
           "1.3.4"
@@ -1278,7 +1370,7 @@
       "version": "0.10.3",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.10.3",
       "versions": {
         "py": [
           "0.10.3"
@@ -1293,7 +1385,7 @@
       "version": "0.1.2",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.2",
       "versions": {
         "py": [
           "0.1.2"
@@ -1308,7 +1400,7 @@
       "version": "0.6.1",
       "author": "",
       "description": "Minimalistic file shell using native Python syntax.",
-      "license": "MIT",
+      "license": "0.6.1",
       "versions": {
         "py": [
           "0.6.1"
@@ -1323,7 +1415,7 @@
       "version": "0.7.0",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.7.0",
       "versions": {
         "py": [
           "0.7.0"
@@ -1338,7 +1430,7 @@
       "version": "0.6",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.6",
       "versions": {
         "py": [
           "0.6"
@@ -1353,7 +1445,7 @@
       "version": "0.3.2",
       "author": "",
       "description": "Lightweight tarfile module subset",
-      "license": "MIT",
+      "license": "0.3.2",
       "versions": {
         "py": [
           "0.3.2"
@@ -1368,7 +1460,7 @@
       "version": "0.5.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.5.1",
       "versions": {
         "py": [
           "0.5.1"
@@ -1383,7 +1475,7 @@
       "version": "0.1.0",
       "author": "",
       "description": "Support for creating MicroPython virtual environments using `micropython -m venv`",
-      "license": "MIT",
+      "license": "0.1.0",
       "versions": {
         "py": [
           "0.1.0"
@@ -1398,7 +1490,7 @@
       "version": "0.1.1",
       "author": "",
       "description": "",
-      "license": "MIT",
+      "license": "0.1.1",
       "versions": {
         "py": [
           "0.1.1"
@@ -1410,26 +1502,40 @@
     },
     {
       "name": "webrepl",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "WebREPL server.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "wm8960",
-      "version": "",
+      "version": "0.1.0",
       "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {}
+      "description": "WM8960 codec.",
+      "license": "0.1.0",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
     },
     {
       "name": "xmltok",
       "version": "0.2",
       "author": "",
       "description": "Simple XML tokenizer",
-      "license": "MIT",
+      "license": "0.2",
       "versions": {
         "py": [
           "0.2"
@@ -1441,5 +1547,5 @@
     }
   ],
   "v": 1,
-  "updated": 1680753607
+  "updated": 1683190316
 }
