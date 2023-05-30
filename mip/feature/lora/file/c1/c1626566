@@ -327,9 +327,9 @@ class _SX126x(BaseModem):
         self._cmd(">BH", _CMD_CLR_ERRORS, 0)
 
     def _clear_irq(self, clear_bits=0xFFFF):
-        # Clear all IRQs flagged in the modem
+        # Clear IRQs flagged in the modem
         #
-        # By default, clears all bits. Otherwise, set a mask of bits to clear.
+        # By default, clears all IRQ bits. Otherwise, argument is the mask of bits to clear.
         self._cmd(">BH", _CMD_CLR_IRQ_STATUS, clear_bits)
         self._last_irq = None
 

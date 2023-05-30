@@ -6,6 +6,7 @@ import umachine
 import utime
 from micropython import const, schedule
 
+# Set to True to get some additional printed debug output.
 _DEBUG = const(False)
 
 
@@ -324,18 +325,20 @@ class BaseModem:
 
         flags = self._get_irq()
 
-        final_flags = flags & self._IRQ_RX_COMPLETE  # has RX actually completed?
         if _DEBUG and flags:
-            print("RX flags {:#x} masked {:#x}".format(flags, final_flags))
-        if final_flags:
-            # clear final_flags IRQs only. Keep flags for valid header, etc. as
-            # they may actually relate to a new packet that the modem is
-            # currently receiving
+            print("RX flags {:#x}".format(flags))
+        if flags & self._IRQ_RX_COMPLETE:
+            # There is a small potential for race conditions here in continuous
+            # RX mode. If packets are received rapidly and the call to this
+            # function delayed, then a ValidHeader interrupt (for example) might
+            # have already set for a second packet which is being received now,
+            # and clearing it will mark the second packet as invalid.
             #
-            # This is safe to do because the individual modem classes ensure that
-            # DIO1/DIO0/etc only go high on 'final_flags' interrupts and not other
-            # interrrupts that may get "stuck" if not cleared.
-            self._clear_irq(final_flags)
+            # However it's necessary in continuous mode as interrupt flags don't
+            # self-clear in the modem otherwise (for example, if a CRC error IRQ
+            # bit sets then it stays set on the next packet, even if that packet
+            # has a valid CRC.)
+            self._clear_irq(flags)
             ok = self._rx_flags_success(flags)
             if not ok:
                 # If a non-valid receive happened, increment the CRC error counter
