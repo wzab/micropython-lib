@@ -161,8 +161,9 @@ class CDCControlInterface(USBInterface):
         return desc, strs
 
     def get_endpoint_descriptors(self, ep_addr, str_idx):
-        self.ep_in = endpoint_descriptor((ep_addr + 1) | EP_IN_FLAG, "interrupt", 8, 16)
-        return (self.ep_in, [], ((ep_addr+1) | EP_IN_FLAG,))
+        self.ep_in = (ep_addr) | EP_IN_FLAG
+        desc = endpoint_descriptor(self.ep_in, "interrupt", 8, 16)
+        return (desc, [], (self.ep_in,))
 
     def handle_interface_control_xfer(self, stage, request):
         # Handle standard and class-specific interface control transfers for CDC devices.
