@@ -4,11 +4,11 @@
 # LoRa is a registered trademark or service mark of Semtech Corporation or its affiliates.
 #
 # In comments, abbreviation "DS" = Semtech SX1261/62 Datasheet Rev 2.1 (December 2021)
-import umachine
-from .modem import BaseModem, ConfigError, RxPacket, _clamp, _flag
-import ustruct
-import utime
+import struct
+import time
 from micropython import const
+from machine import Pin
+from .modem import BaseModem, ConfigError, RxPacket, _clamp, _flag
 
 # Set _DEBUG to const(True) to print all SPI commands sent to the device, and all responses,
 # plus a few additional pieces of information.
@@ -138,9 +138,13 @@ class _SX126x(BaseModem):
         self._spi = spi
         self._cs = cs
         self._busy = busy
-        self._cs(1)
         self._sleep = True  # assume the radio is in sleep mode to start, will wake on _cmd
         self._dio1 = dio1
+
+        busy.init(mode=Pin.IN)
+        cs.init(mode=Pin.OUT, value=1)
+        if dio1:
+            dio1.init(mode=Pin.IN)
 
         self._busy_timeout = _CMD_BUSY_TIMEOUT_BASE_US
 
@@ -157,10 +161,10 @@ class _SX126x(BaseModem):
 
         if reset:
             # If the caller supplies a reset pin argument, reset the radio
-            reset(0)
-            utime.sleep_ms(1)
+            reset.init(mode=Pin.OUT, value=0)
+            time.sleep_ms(1)
             reset(1)
-            utime.sleep_ms(5)
+            time.sleep_ms(5)
         else:
             self.standby()  # Otherwise, at least put the radio to a known state
 
@@ -171,7 +175,7 @@ class _SX126x(BaseModem):
             # This check exists to determine that the SPI settings and modem
             # selection are correct. Otherwise it's possible for the driver to
             # run for quite some time before it detects an invalid response.
-            raise RuntimeError("Read invalid status {}.".format(status))
+            raise RuntimeError("Invalid initial status {}.".format(status))
 
         if dio2_rf_sw:
             self._cmd("BB", _CMD_SET_DIO2_AS_RF_SWITCH_CTRL, 1)
@@ -203,7 +207,7 @@ class _SX126x(BaseModem):
             reg_tcxo_trim = tcxo_trim_lookup.index(dv)
 
             self._cmd(">BI", _CMD_SET_DIO3_AS_TCXO_CTRL, (reg_tcxo_trim << 24) + timeout)
-            utime.sleep_ms(15)
+            time.sleep_ms(15)
             # As per DS 13.3.6 SetDIO3AsTCXOCtrl, should expect error
             # value 0x20 "XOSC_START_ERR" to be flagged as XOSC has only just
             # started now. So clear it.
@@ -227,7 +231,7 @@ class _SX126x(BaseModem):
                 0x0,  # DIO2Mask, not used
                 0x0,  # DIO3Mask, not used
             )
-            dio1.irq(self._radio_isr, trigger=umachine.Pin.IRQ_RISING)
+            dio1.irq(self._radio_isr, trigger=Pin.IRQ_RISING)
 
         self._clear_irq()
 
@@ -277,7 +281,7 @@ class _SX126x(BaseModem):
         #
         # To manually wake the modem without initiating a new operation, call standby().
         self._cs(0)
-        utime.sleep_us(20)
+        time.sleep_us(20)
         self._cs(1)
         self._sleep = False
         self._clear_errors()  # Clear "XOSC failed to start" which will reappear at this time
@@ -457,7 +461,7 @@ class _SX126x(BaseModem):
         # calibParam 0xFE means to calibrate all blocks.
         self._cmd("<BB", _CMD_CALIBRATE, 0xFE)
 
-        utime.sleep_us(_CALIBRATE_TYPICAL_TIME_US)
+        time.sleep_us(_CALIBRATE_TYPICAL_TIME_US)
 
         # a falling edge of BUSY indicates calibration is done
         self._wait_not_busy(_CALIBRATE_TIMEOUT_US)
@@ -655,13 +659,13 @@ class _SX126x(BaseModem):
 
     def _wait_not_busy(self, timeout_us):
         # Wait until the radio de-asserts the busy line
-        start = utime.ticks_us()
+        start = time.ticks_us()
         ticks_diff = 0
         while self._busy():
-            ticks_diff = utime.ticks_diff(utime.ticks_us(), start)
+            ticks_diff = time.ticks_diff(time.ticks_us(), start)
             if ticks_diff > timeout_us:
                 raise RuntimeError("BUSY timeout")
-            utime.sleep_us(1)
+            time.sleep_us(1)
         if _DEBUG and ticks_diff > 105:
             # By default, debug log any busy time that takes longer than the
             # datasheet-promised Typical 105us (this happens when starting the 32MHz oscillator,
@@ -670,9 +674,9 @@ class _SX126x(BaseModem):
 
     def _cmd(self, fmt, *write_args, n_read=0, write_buf=None, read_buf=None):
         # Execute an SX1262 command
-        # fmt - Format string suitable for use with ustruct.pack. First item should be 'B' and
+        # fmt - Format string suitable for use with struct.pack. First item should be 'B' and
         # corresponds to the command opcode.
-        # write_args - Arguments suitable for ustruct.pack using fmt. First argument should be a
+        # write_args - Arguments suitable for struct.pack using fmt. First argument should be a
         # command opcode byte.
         #
         # Optional arguments:
@@ -691,9 +695,9 @@ class _SX126x(BaseModem):
         self._wait_not_busy(self._busy_timeout)
 
         # Pack write_args into _buf and wrap a memoryview of the correct length around it
-        wrlen = ustruct.calcsize(fmt)
+        wrlen = struct.calcsize(fmt)
         assert n_read + wrlen <= len(self._buf)  # if this fails, make _buf bigger!
-        ustruct.pack_into(fmt, self._buf, 0, *write_args)
+        struct.pack_into(fmt, self._buf, 0, *write_args)
         buf = memoryview(self._buf)[: (wrlen + n_read)]
 
         if _DEBUG:

@@ -3,8 +3,8 @@
 #
 # LoRa is a registered trademark or service mark of Semtech Corporation or its affiliates.
 
-import umachine
-import utime
+import machine
+import time
 
 
 class SyncModem:
@@ -26,19 +26,19 @@ class SyncModem:
         # Send the given packet (byte sequence),
         # and return once transmission of the packet is complete.
         #
-        # Returns a timestamp (result of utime.ticks_ms()) when the packet
+        # Returns a timestamp (result of time.ticks_ms()) when the packet
         # finished sending.
         self.prepare_send(packet)
 
         # If the caller specified a timestamp to start transmission at, wait until
         # that time before triggering the send
         if tx_at_ms is not None:
-            utime.sleep_ms(max(0, utime.ticks_diff(tx_at_ms, utime.ticks_ms())))
+            time.sleep_ms(max(0, time.ticks_diff(tx_at_ms, time.ticks_ms())))
 
         will_irq = self.start_send()  # ... and go!
 
         # sleep for the expected send time before checking if send has ended
-        utime.sleep_ms(self.get_time_on_air_us(len(packet)) // 1000)
+        time.sleep_ms(self.get_time_on_air_us(len(packet)) // 1000)
 
         tx = True
         while tx is True:
@@ -70,7 +70,7 @@ class SyncModem:
         # For synchronous usage, block until an interrupt occurs or we time out
         if will_irq:
             for n in range(100):
-                umachine.idle()
+                machine.idle()
                 # machine.idle() wakes up very often, so don't actually return
                 # unless _radio_isr ran already. The outer for loop is so the
                 # modem is still polled occasionally to
@@ -83,7 +83,7 @@ class SyncModem:
                 if self.irq_triggered():
                     break
         else:
-            utime.sleep_ms(1)
+            time.sleep_ms(1)
 
 
 __version__ = '0.1'

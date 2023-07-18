@@ -3,8 +3,8 @@
 #
 # LoRa is a registered trademark or service mark of Semtech Corporation or its affiliates.
 
-import uasyncio
-import utime
+import asyncio
+import time
 from micropython import const
 
 # Set to True to get some additional printed debug output.
@@ -28,7 +28,7 @@ class AsyncModem:
 
     def _after_init(self):
         # Separate flags for (rx, tx) as only one task can block on a flag
-        self._flags = (uasyncio.ThreadSafeFlag(), uasyncio.ThreadSafeFlag())
+        self._flags = (asyncio.ThreadSafeFlag(), asyncio.ThreadSafeFlag())
         self.set_irq_callback(self._callback)
 
     async def recv(self, timeout_ms=None, rx_length=0xFF, rx_packet=None):
@@ -67,7 +67,7 @@ class AsyncModem:
         timeout_ms = self.get_time_on_air_us(len(packet)) // 1000 + 50
 
         if tx_at_ms is not None:
-            await uasyncio.sleep_ms(max(0, utime.ticks_diff(tx_at_ms, utime.ticks_ms())))
+            await asyncio.sleep_ms(max(0, time.ticks_diff(tx_at_ms, time.ticks_ms())))
 
         if _DEBUG:
             print("start_send")
@@ -102,11 +102,11 @@ class AsyncModem:
             # In theory we don't need to ever timeout on the flag as the ISR will always
             # fire, but this gives a workaround for possible race conditions or dropped interrupts.
             try:
-                await uasyncio.wait_for_ms(self._flags[idx].wait(), timeout_ms)
-            except uasyncio.TimeoutError:
+                await asyncio.wait_for_ms(self._flags[idx].wait(), timeout_ms)
+            except asyncio.TimeoutError:
                 pass
         else:
-            await uasyncio.sleep_ms(timeout_ms)
+            await asyncio.sleep_ms(timeout_ms)
 
         if _DEBUG:
             print(f"wait complete")

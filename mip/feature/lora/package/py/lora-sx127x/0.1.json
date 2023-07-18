@@ -1,1 +1,1 @@
-{"v":1,"hashes":[["lora/__init__.py","1cfdc13d"],["lora/modem.py","27faf443"],["lora/sx127x.py","6772684b"]],"version":"0.1"}
+{"v":1,"hashes":[["lora/modem.py","215b5a10"],["lora/__init__.py","1cfdc13d"],["lora/sx127x.py","c7e56cea"]],"version":"0.1"}

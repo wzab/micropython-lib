@@ -6,9 +6,9 @@
 # In comments, abbreviation "DS" = Semtech SX1276/77/78/79 Datasheet rev 7 (May 2020)
 from micropython import const
 from .modem import BaseModem, ConfigError, RxPacket, _clamp, _flag
-import umachine
-import ustruct
-import utime
+from machine import Pin
+import struct
+import time
 
 # Set _DEBUG to const(True) to print all register reads and writes, and current register values
 # even when an update isn't needed. Plus a few additional pieces of information.
@@ -242,10 +242,14 @@ class _SX127x(BaseModem):
         self._dio0 = dio0
         self._dio1 = dio1
 
-        if self._dio0:
-            self._dio0.irq(self._radio_isr, trigger=umachine.Pin.IRQ_RISING)
-            if self._dio1:
-                self._dio1.irq(self._radio_isr, trigger=umachine.Pin.IRQ_RISING)
+        cs.init(mode=Pin.OUT, value=1)
+
+        if dio0:
+            dio0.init(mode=Pin.IN)
+            dio0.irq(self._radio_isr, trigger=Pin.IRQ_RISING)
+            if dio1:
+                dio1.init(mode=Pin.IN)
+                dio1.irq(self._radio_isr, trigger=Pin.IRQ_RISING)
 
         # Configuration settings that need to be tracked by the driver
         # Note: a number of these are set in the base class constructor
@@ -253,10 +257,10 @@ class _SX127x(BaseModem):
 
         if reset:
             # If the user supplies a reset pin argument, reset the radio
-            reset(0)
-            utime.sleep_ms(1)
+            reset.init(mode=Pin.OUT, value=0)
+            time.sleep_ms(1)
             reset(1)
-            utime.sleep_ms(5)
+            time.sleep_ms(5)
 
         version = self._reg_read(_REG_VERSION)
         if version != 0x12:
@@ -480,7 +484,7 @@ class _SX127x(BaseModem):
 
         if "preamble_len" in lora_cfg:
             self._preamble_len = lora_cfg["preamble_len"]
-            self._reg_write(_REG_PREAMBLE_LEN_MSB, ustruct.pack(">H", self._preamble_len))
+            self._reg_write(_REG_PREAMBLE_LEN_MSB, struct.pack(">H", self._preamble_len))
 
         # Update MODEM_CONFIG3, for any fields that have changed
         modem_config3 = 0
@@ -664,7 +668,7 @@ class _SX127x(BaseModem):
 
         self._reg_update(_REG_FSKOOK_IMAGE_CAL, _IMAGE_CAL_START, _IMAGE_CAL_START)
         while self._reg_read(_REG_FSKOOK_IMAGE_CAL) & _IMAGE_CAL_RUNNING:
-            utime.sleep_ms(1)
+            time.sleep_ms(1)
 
         self._set_mode(_OPMODE_MODE_STDBY)  # restore LoRA mode
 

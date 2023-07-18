@@ -2,8 +2,7 @@
 # MIT license; Copyright (c) 2023 Angus Gratton
 #
 # LoRa is a registered trademark or service mark of Semtech Corporation or its affiliates.
-import umachine
-import utime
+import time
 from micropython import const, schedule
 
 # Set to True to get some additional printed debug output.
@@ -63,7 +62,7 @@ class BaseModem:
         # - True if the radio is continuously receiving, or performing a single receive with
         #   no timeout.
         # - An int if there is a timeout set, in which case it is the is the receive deadline
-        #   (as a utime.ticks_ms() timestamp).
+        #   (as a time.ticks_ms() timestamp).
         #
         # Note that self._rx can be not-False even when the radio hardware is not actually
         # receiving, if self._tx is True (send always pauses recv.)
@@ -81,7 +80,7 @@ class BaseModem:
         # False means not sending.
         self._tx = False
 
-        # timestamp (as utime.ticks_ms() result) of last IRQ event
+        # timestamp (as time.ticks_ms() result) of last IRQ event
         self._last_irq = None
 
         # values are:
@@ -243,7 +242,7 @@ class BaseModem:
     # timed out during a send (meaning no receive IRQ will fire, but the
     # receiver should wake up and move on anyhow.)
     def _radio_isr(self, pin):
-        self._last_irq = utime.ticks_ms()
+        self._last_irq = time.ticks_ms()
         if self._irq_callback:
             self._irq_callback(pin)
         if _DEBUG:
@@ -271,9 +270,9 @@ class BaseModem:
 
     def _get_last_irq(self):
         # Return the _last_irq timestamp if set by an ISR, or the
-        # current utime.time_ms() timestamp otherwise.
+        # current time.time_ms() timestamp otherwise.
         if self._last_irq is None:
-            return utime.ticks_ms()
+            return time.ticks_ms()
         return self._last_irq
 
     # Common parts of receive API
@@ -286,7 +285,7 @@ class BaseModem:
             raise ValueError()  # these two options are mutually exclusive
 
         if timeout_ms is not None:
-            self._rx = utime.ticks_add(utime.ticks_ms(), timeout_ms)
+            self._rx = time.ticks_add(time.ticks_ms(), timeout_ms)
         else:
             self._rx = True
 
@@ -382,7 +381,7 @@ class BaseModem:
 
         timeout_ms = None
         if isinstance(rx, int):  # timeout is set
-            timeout_ms = utime.ticks_diff(rx, utime.ticks_ms())
+            timeout_ms = time.ticks_diff(rx, time.ticks_ms())
             if timeout_ms <= 0:
                 # Timed out in software, nothing to resume
                 self._end_recv()
@@ -420,7 +419,7 @@ class BaseModem:
         # - False if no send is ongoing.
         # - An int value exactly one time per transmission, the first time
         #   poll_send() is called after a send ends. In this case it
-        #   is the utime.ticks_ms() timestamp of the time that the send completed.
+        #   is the time.ticks_ms() timestamp of the time that the send completed.
         #
         # Note this function only returns an int value one time (the first time it
         # is called after send completes).
