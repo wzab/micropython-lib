@@ -1,1 +1,1 @@
-{"v":1,"hashes":[["cbor2/__init__.py","cec89454"],["cbor2/encoder.py","cce9efd5"],["cbor2/decoder.py","d7029e63"]],"version":"0.1.0"}
+{"v":1,"hashes":[["cbor2/encoder.py","cce9efd5"],["cbor2/decoder.py","d7029e63"],["cbor2/__init__.py","cec89454"]],"version":"0.1.0"}
