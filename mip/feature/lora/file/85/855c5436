@@ -242,13 +242,13 @@ class _SX127x(BaseModem):
         self._dio0 = dio0
         self._dio1 = dio1
 
-        cs.init(mode=Pin.OUT, value=1)
+        cs.init(Pin.OUT, value=1)
 
         if dio0:
-            dio0.init(mode=Pin.IN)
+            dio0.init(Pin.IN)
             dio0.irq(self._radio_isr, trigger=Pin.IRQ_RISING)
             if dio1:
-                dio1.init(mode=Pin.IN)
+                dio1.init(Pin.IN)
                 dio1.irq(self._radio_isr, trigger=Pin.IRQ_RISING)
 
         # Configuration settings that need to be tracked by the driver
@@ -257,7 +257,7 @@ class _SX127x(BaseModem):
 
         if reset:
             # If the user supplies a reset pin argument, reset the radio
-            reset.init(mode=Pin.OUT, value=0)
+            reset.init(Pin.OUT, value=0)
             time.sleep_ms(1)
             reset(1)
             time.sleep_ms(5)

@@ -141,10 +141,10 @@ class _SX126x(BaseModem):
         self._sleep = True  # assume the radio is in sleep mode to start, will wake on _cmd
         self._dio1 = dio1
 
-        busy.init(mode=Pin.IN)
-        cs.init(mode=Pin.OUT, value=1)
+        busy.init(Pin.IN)
+        cs.init(Pin.OUT, value=1)
         if dio1:
-            dio1.init(mode=Pin.IN)
+            dio1.init(Pin.IN)
 
         self._busy_timeout = _CMD_BUSY_TIMEOUT_BASE_US
 
@@ -161,7 +161,7 @@ class _SX126x(BaseModem):
 
         if reset:
             # If the caller supplies a reset pin argument, reset the radio
-            reset.init(mode=Pin.OUT, value=0)
+            reset.init(Pin.OUT, value=0)
             time.sleep_ms(1)
             reset(1)
             time.sleep_ms(5)
