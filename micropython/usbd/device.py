@@ -508,6 +508,9 @@ class USBInterface:
         # reset by the host. This can happen when the USB device is unplugged,
         # or if the host triggers a reset for some other reason.
         #
+        # Override this function to cancel any pending operations specific to
+        # the interface (outstanding USB transfers are already cancelled).
+        #
         # At this point, no USB functionality is available - handle_open() will
         # be called later if/when the USB host re-enumerates and configures the
         # interface.
@@ -601,3 +604,22 @@ class USBInterface:
         if not self._open:
             raise RuntimeError()
         return get_usbdevice()._submit_xfer(ep_addr, data, done_cb)
+
+    def set_ep_stall(self, ep_addr, stall):
+        # Set or clear endpoint STALL state, according to the bool "stall" parameter.
+        #
+        # Generally endpoint STALL is handled automatically by TinyUSB, but
+        # there are some device classes that need to explicitly stall or unstall
+        # an endpoint under certain conditions.
+        if not self._open or ep_addr not in get_usbdevice()._eps:
+            raise RuntimeError()
+        get_usbdevice()._usbd.set_ep_stall(ep_addr, stall)
+
+    def get_ep_stall(self, ep_addr):
+        # Get the current endpoint STALL state.
+        #
+        # Endpoint can be stalled/unstalled by host, TinyUSB stack, or calls to
+        # set_ep_stall().
+        if not self._open or ep_addr not in get_usbdevice()._eps:
+            raise RuntimeError()
+        return get_usbdevice()._usbd.get_ep_stall(ep_addr)
