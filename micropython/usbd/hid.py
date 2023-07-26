@@ -13,7 +13,7 @@ from .utils import (
     REQ_TYPE_CLASS,
 )
 from micropython import const
-import ustruct
+import struct
 
 _DESC_HID_TYPE = const(0x21)
 _DESC_REPORT_TYPE = const(0x22)
@@ -111,7 +111,7 @@ class HIDInterface(USBInterface):
         # and optional additional descriptors.
         #
         # See HID Specification Version 1.1, Section 6.2.1 HID Descriptor p22
-        result = ustruct.pack(
+        result = struct.pack(
             "<BBHBBBH",
             9 + 3 * len(self.extra_descriptors),  # bLength
             _DESC_HID_TYPE,  # bDescriptorType
@@ -127,7 +127,7 @@ class HIDInterface(USBInterface):
         # support in base class
         if self.extra_descriptors:
             result += b"".join(
-                ustruct.pack("<BH", dt, len(dd)) for (dt, dd) in self.extra_descriptors
+                struct.pack("<BH", dt, len(dd)) for (dt, dd) in self.extra_descriptors
             )
 
         return result
@@ -280,7 +280,7 @@ class MouseInterface(HIDInterface):
         # transfer after it's submitted. So reusing a bytearray() creates a risk
         # of a race condition if a new report transfer is submitted using the
         # same buffer, before the previous one has completed.
-        report = ustruct.pack("Bbb", b, dx, dy)
+        report = struct.pack("Bbb", b, dx, dy)
 
         super().send_report(report)
 

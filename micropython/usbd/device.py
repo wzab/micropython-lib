@@ -2,7 +2,7 @@
 # MIT license; Copyright (c) 2022 Angus Gratton
 from micropython import const
 import machine
-import ustruct
+import struct
 
 from .utils import split_bmRequestType, EP_IN_FLAG
 
@@ -119,7 +119,7 @@ class _USBDevice:
 
         FMT = "<BBHBBBBHHHBBBB"
         # static descriptor fields
-        f = ustruct.unpack(FMT, self._usbd.static.desc_device)
+        f = struct.unpack(FMT, self._usbd.static.desc_device)
 
         def maybe_set(value, idx):
             # Override a numeric descriptor value or keep static value f[idx] if 'value' is None
@@ -135,7 +135,7 @@ class _USBDevice:
 
         # Either copy each descriptor field directly from the static device descriptor, or 'maybe'
         # override if a custom value has been set on this object
-        return ustruct.pack(
+        return struct.pack(
             FMT,
             f[0],  # bLength
             f[1],  # bDescriptorType
@@ -258,7 +258,7 @@ class _USBDevice:
         bNumInterfaces = self._usbd.static.itf_max if self.include_static else 0
         bNumInterfaces += len(self._itfs)
 
-        ustruct.pack_into(
+        struct.pack_into(
             "<BBHBBBBB",
             desc,
             0,
@@ -451,7 +451,7 @@ class USBInterface:
         #   (indexes in the descriptor data should start from 'str_idx'.)
         #
         # See USB 2.0 specification section 9.6.5 p267 for standard interface descriptors.
-        desc = ustruct.pack(
+        desc = struct.pack(
             "<" + "B" * _STD_DESC_INTERFACE_LEN,
             _STD_DESC_INTERFACE_LEN,  # bLength
             _STD_DESC_INTERFACE_TYPE,  # bDescriptorType
