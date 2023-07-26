@@ -300,7 +300,7 @@ class _USBDevice:
         i = 0
         while i < len(interface_desc_view):
             # descriptor length, type, and index (if it's an interface descriptor)
-            dl, dt, di = interface_desc_view[i:i+3]
+            dl, dt, di = interface_desc_view[i : i + 3]
             if dt == _STD_DESC_INTERFACE_TYPE:
                 if di >= self._usbd.static.itf_max:
                     di -= self._usbd.static.itf_max
@@ -602,7 +602,7 @@ class USBInterface:
         # Note that done_cb may be called immediately, possibly before this
         # function has returned to the caller.
         if not self._open:
-            raise RuntimeError()
+            raise RuntimeError
         return get_usbdevice()._submit_xfer(ep_addr, data, done_cb)
 
     def set_ep_stall(self, ep_addr, stall):
@@ -612,7 +612,7 @@ class USBInterface:
         # there are some device classes that need to explicitly stall or unstall
         # an endpoint under certain conditions.
         if not self._open or ep_addr not in get_usbdevice()._eps:
-            raise RuntimeError()
+            raise RuntimeError
         get_usbdevice()._usbd.set_ep_stall(ep_addr, stall)
 
     def get_ep_stall(self, ep_addr):
@@ -621,5 +621,5 @@ class USBInterface:
         # Endpoint can be stalled/unstalled by host, TinyUSB stack, or calls to
         # set_ep_stall().
         if not self._open or ep_addr not in get_usbdevice()._eps:
-            raise RuntimeError()
+            raise RuntimeError
         return get_usbdevice()._usbd.get_ep_stall(ep_addr)
