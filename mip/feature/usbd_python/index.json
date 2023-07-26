@@ -1366,6 +1366,21 @@
       }
     },
     {
+      "name": "usbd",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
       "name": "utarfile",
       "version": "0.4.0",
       "author": "",
@@ -1487,5 +1502,5 @@
     }
   ],
   "v": 1,
-  "updated": 1690355973
+  "updated": 1690356064
 }
