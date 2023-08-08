@@ -1,1 +1,1 @@
-{"v":1,"hashes":[["urequests.py","006eada5"],["mip/__init__.py","9a7bfbf1"],["ntptime.py","452e5655"],["webrepl.py","06c06c83"],["webrepl_setup.py","4ddf2fae"]],"version":"0.1.0"}
+{"v":1,"hashes":[["requests/__init__.py","efbb7688"],["mip/__init__.py","61a5b678"],["ntptime.py","729fe312"],["webrepl.py","cd8c2ec1"],["webrepl_setup.py","b406557a"],["urequests.py","2bee6a73"]],"version":"0.1.0"}
