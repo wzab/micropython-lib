@@ -185,7 +185,7 @@ special_decoders = {
     20: lambda self: False,
     21: lambda self: True,
     22: lambda self: None,
-    23: lambda self: undefined,  # noqa: F821
+    # 23 is undefined
     24: decode_simple_value,
     25: decode_float16,
     26: decode_float32,
