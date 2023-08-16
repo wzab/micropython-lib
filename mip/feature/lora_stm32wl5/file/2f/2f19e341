@@ -48,11 +48,9 @@ class _WL55SubGhzModem(sx126x._SX126x):
     def __init__(
         self,
         lora_cfg=None,
-        external_hse32=True,
-        tcxo_millivolts=1600,
+        tcxo_millivolts=1700,
         ant_sw=NucleoWL55RFConfig,
     ):
-        stm.subghz_ext_hse32(external_hse32)
         self._hp = False
 
         if ant_sw == NucleoWL55RFConfig:
