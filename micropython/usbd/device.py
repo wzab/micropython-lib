@@ -324,9 +324,8 @@ class _USBDevice:
         #
         # Generally, drivers should call USBInterface.submit_xfer() instead. See
         # that function for documentation about the possible parameter values.
-        cb = self._ep_cbs[ep_addr]
-        if cb:
-            raise RuntimeError(f"Pending xfer on EP {ep_addr}")
+        if self._ep_cbs[ep_addr]:
+            raise RuntimeError("xfer_pending")
 
         # USBD callback may be called immediately, before Python execution
         # continues
@@ -334,11 +333,11 @@ class _USBDevice:
 
         if not self._usbd.submit_xfer(ep_addr, data):
             self._ep_cbs[ep_addr] = None
-            return False
-        return True
+            raise RuntimeError("submit failed")
 
     def _xfer_cb(self, ep_addr, result, xferred_bytes):
         # Singleton callback from TinyUSB custom class driver when a transfer completes.
+        print('_xfer_cb', ep_addr, result, xferred_bytes)
         cb = self._ep_cbs.get(ep_addr, None)
         if cb:
             self._ep_cbs[ep_addr] = None
@@ -582,6 +581,12 @@ class USBInterface:
         # possible return values.
         return False
 
+    def xfer_pending(self, ep_addr):
+        # Return True if a transfer is already pending on ep_addr.
+        #
+        # Only one transfer can be submitted at a time.
+        return bool(get_usbdevice()._ep_cbs[ep_addr])
+
     def submit_xfer(self, ep_addr, data, done_cb=None):
         # Submit a USB transfer (of any type except control)
         #
@@ -599,11 +604,28 @@ class USBInterface:
         # xferred_bytes) where result is one of xfer_result_t enum (see top of
         # this file), and xferred_bytes is an integer.
         #
+        # If the function returns, the transfer is queued.
+        #
+        # The function will raise RuntimeError under the following conditions:
+        #
+        # - The interface is not "open" (i.e. has not been enumerated and configured
+        #   by the host yet.)
+        #
+        # - A transfer is already pending on this endpoint (use xfer_pending() to check
+        #   before sending if needed.)
+        #
+        # - A DCD error occurred when queueing the transfer on the hardware.
+        #
+        #
+        # Will raise TypeError if 'data' isn't he correct type of buffer for the
+        # endpoint transfer direction.
+        #
         # Note that done_cb may be called immediately, possibly before this
         # function has returned to the caller.
         if not self._open:
-            raise RuntimeError
-        return get_usbdevice()._submit_xfer(ep_addr, data, done_cb)
+            raise RuntimeError("Not open")
+        print('_submit_xfer', ep_addr, len(data))
+        get_usbdevice()._submit_xfer(ep_addr, data, done_cb)
 
     def set_ep_stall(self, ep_addr, stall):
         # Set or clear endpoint STALL state, according to the bool "stall" parameter.

@@ -5,6 +5,7 @@ package(
     "usbd",
     files=(
         "__init__.py",
+        "cdc.py",
         "device.py",
         "hid.py",
         "hid_keypad.py",
