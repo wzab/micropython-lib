@@ -827,31 +827,31 @@
     },
     {
       "name": "lora",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.1.1"
         ],
         "6": [
-          "0.1.0"
+          "0.1.1"
         ]
       }
     },
     {
       "name": "lora-async",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.1.1"
         ],
         "6": [
-          "0.1.0"
+          "0.1.1"
         ]
       }
     },
@@ -917,16 +917,16 @@
     },
     {
       "name": "lsm6dsox",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "",
       "description": "ST LSM6DSOX imu driver.",
       "license": "MIT",
       "versions": {
         "py": [
-          "1.0.0"
+          "1.0.1"
         ],
         "6": [
-          "1.0.0"
+          "1.0.1"
         ]
       }
     },
@@ -1682,16 +1682,16 @@
     },
     {
       "name": "wm8960",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": "",
       "description": "WM8960 codec.",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.1.1"
         ],
         "6": [
-          "0.1.0"
+          "0.1.1"
         ]
       }
     },
@@ -1727,5 +1727,5 @@
     }
   ],
   "v": 1,
-  "updated": 1691478286
+  "updated": 1692755034
 }
