@@ -1,1 +1,1 @@
-{"v":1,"hashes":[["lora/modem.mpy","50b518b3"],["lora/__init__.mpy","b461ffe3"],["lora/sx126x.mpy","02dcb419"],["lora/stm32wl5.mpy","0f1c4a62"]],"version":"0.1"}
+{"v":1,"hashes":[["lora/modem.mpy","e52ffcaf"],["lora/__init__.mpy","044c22f6"],["lora/sx126x.mpy","5a89d485"],["lora/stm32wl5.mpy","0f1c4a62"]],"version":"0.1"}
