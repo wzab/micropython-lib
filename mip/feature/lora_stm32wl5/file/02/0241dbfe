@@ -2,7 +2,7 @@
 # MIT license; Copyright (c) 2022 Angus Gratton
 #
 # This driver is essentially an embedded SX1262 with a custom internal interface block.
-# Requires the stm module in Micropython to be compiled with STM32WL5 subghz radio support.
+# Requires the stm module in MicroPython to be compiled with STM32WL5 subghz radio support.
 #
 # LoRa is a registered trademark or service mark of Semtech Corporation or its affiliates.
 from machine import Pin, SPI
