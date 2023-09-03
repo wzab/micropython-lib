@@ -138,6 +138,8 @@ class CDCControlInterface(USBInterface):
         self.stop_bits = 0
         self.parity = 0
         self.data_bits = None
+        self.break_cb = None   # callback for break condition
+
         self.line_coding_state = bytearray(7)
 
     def get_itf_descriptor(self, num_eps, itf_idx, str_idx):
@@ -210,6 +212,10 @@ class CDCControlInterface(USBInterface):
                     self.dtr = bool(wValue & 0x1)
                     self.rts = bool(wValue & 0x2)
                     return b""
+                elif bRequest == _SEND_BREAK_REQ:
+                    if self.break_cb:
+                        self.break_cb(wValue)
+                    return b""
 
         if stage == STAGE_DATA:
             if req_type == REQ_TYPE_CLASS:
@@ -219,6 +225,11 @@ class CDCControlInterface(USBInterface):
                     self.baudrate, self.stop_bits, self.parity, self.data_bits = ustruct.unpack(
                         '<LBBB', self.line_coding_state)
         return True
+
+    def set_break_cb(self, cb):
+        # sets a callback for the break condition
+        # callback must have one parameter (duration in msec)
+        self.break_cb = cb
 
     def get_control_line(self):
         return self.dtr, self.rts
