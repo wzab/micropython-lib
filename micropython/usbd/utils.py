@@ -3,7 +3,18 @@
 #
 # Some constants and stateless utility functions for working with USB descriptors and requests.
 from micropython import const
+import machine
 import ustruct
+
+if not hasattr(machine, 'disable_irq'):
+    # Allow testing on the unix port
+    # TODO: Remove or make less hacky before merging
+    class FakeMachine:
+        def disable_irq(self):
+            return -99
+        def enable_irq(self, s):
+            pass
+    machine = FakeMachine()
 
 # Shared constants
 #
@@ -75,3 +86,118 @@ def split_bmRequestType(bmRequestType):
         (bmRequestType >> 5) & 0x03,
         (bmRequestType >> 7) & 0x01,
     )
+
+
+class Buffer:
+    # An interrupt-safe producer/consumer buffer that wraps a bytearray object.
+    #
+    # Kind of like a ring buffer, but supports the idea of returning a
+    # memoryview for either read or write of multiple bytes (suitable for
+    # passing to a buffer function without needing to allocate another buffer to
+    # read into.)
+    #
+    # Consumer can call pend_read() to get a memoryview to read from, and then
+    # finish_read(n) when done to indicate it read 'n' bytes from the
+    # memoryview. There is also a readinto() convenience function.
+    #
+    # Producer must call pend_write() to get a memorybuffer to write into, and
+    # then finish_write(n) when done to indicate it wrote 'n' bytes into the
+    # memoryview. There is also a normal write() convenience function.
+    #
+    # - Only one producer and one consumer is supported.
+    #
+    # - Calling pend_read() and pend_write() is effectively idempotent, they can be
+    #   called more than once without a corresponding finish_x() call if necessary
+    #   (provided only one thread does this, as per the previous point.)
+    #
+    # - Calling finish_write() and finish_read() is hard interrupt safe (does
+    #   not allocate). pend_read() and pend_write() each allocate 1 block for
+    #   the memoryview that is returned.
+    #
+    # The buffer contents are always laid out as:
+    #
+    # - Slice [:_n] = bytes of valid data waiting to read
+    # - Slice [_n:_w] = unused space
+    # - Slice [_w:] = bytes of pending write buffer waiting to be written
+    #
+    # This buffer should be fast when most reads and writes are balanced and use
+    # the whole buffer.  When this doesn't happen, performance degrades to
+    # approximate a Python-based single byte ringbuffer.
+    #
+    def __init__(self, length):
+        self._b = bytearray(length)
+        self._n = 0  # number of bytes in buffer read to read, starting at index 0
+        self._w = length  # start index of a pending write into the buffer, if any. equals len(self._b) if no write is pending.
+
+    def writable(self):
+        # Number of writable bytes in the buffer. Assumes no pending write is outstanding.
+        return len(self._b) - self._n
+
+    def readable(self):
+        # Number of readable bytes in the buffer. Assumes no pending read is outstanding.
+        return self._n
+
+    def pend_write(self):
+        # Returns a memoryview that the producer can write bytes into.
+        ist = machine.disable_irq()
+        try:
+            self._w = self._n
+            return memoryview(self._b)[self._w:]
+        finally:
+            machine.enable_irq(ist)
+
+    def finish_write(self, nbytes):
+        # Called by the producer to indicate it wrote nbytes into the buffer.
+        ist = machine.disable_irq()
+        try:
+            assert nbytes <= len(self._b) - self._w  # can't say we wrote more than was pended
+            if self._n < self._w:
+                # data was read while the write was happening, so shuffle the buffer back towards index 0
+                # to avoid fragmentation
+                self._b[self._n:self._n+nbytes] = memoryview(self._b)[self._w:self._w+nbytes]
+                self._n += nbytes
+                self._w += nbytes
+            else:
+                # no data was read while the write was happening, so the buffer is already in place
+                assert self._n == self._w
+                self._n += nbytes
+            self._w = len(self._b)
+        finally:
+            machine.enable_irq(ist)
+
+    def write(self, w):
+        # Helper method for the producer to write into the buffer in one call
+        pw = self.pend_write()
+        to_w = min(len(w), len(pw))
+        if to_w:
+            pw[:to_w] = w[:to_w]
+            self.finish_write(to_w)
+        return to_w
+
+    def pend_read(self):
+        # Return a memoryview that the consumer can read bytes from
+        return memoryview(self._b)[:self._n]
+
+    def finish_read(self, nbytes):
+        # Called by the consumer to indicate it read nbytes from the buffer.
+        ist = machine.disable_irq()
+        try:
+            assert nbytes <= self._n  # can't say we read more than was available
+            i = 0
+            self._n -= nbytes
+            while i < self._n:
+                # consumer only read part of the buffer, so shuffle remaining
+                # read data back towards index 0 to avoid fragmentation
+                self._b[i] = self._b[i + nbytes]
+                i += 1
+        finally:
+            machine.enable_irq(ist)
+
+    def readinto(self, b):
+        # Helper method for the consumer to read out of the buffer in one call
+        pr = self.pend_read()
+        to_r = min(len(pr), len(b))
+        if to_r:
+            b[:to_r] = pr[:to_r]
+            self.finish_read(to_r)
+        return to_r
