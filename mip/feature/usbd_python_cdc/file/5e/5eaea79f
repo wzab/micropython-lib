@@ -210,7 +210,7 @@ class _USBDevice:
         self._eps = {}  # rebuild endpoint mapping as we enumerate each interface
         self._ep_cbs = {}
         itf_idx = static.itf_max
-        ep_addr = static.ep_max
+        ep_addr = max(static.ep_max, 1)  # Endpoint 0 reserved for control
         str_idx = static.str_max + len(strs)
         for itf in self._itfs:
             # Get the endpoint descriptors first so we know how many endpoints there are
@@ -337,7 +337,6 @@ class _USBDevice:
 
     def _xfer_cb(self, ep_addr, result, xferred_bytes):
         # Singleton callback from TinyUSB custom class driver when a transfer completes.
-        print('_xfer_cb', ep_addr, result, xferred_bytes)
         cb = self._ep_cbs.get(ep_addr, None)
         if cb:
             self._ep_cbs[ep_addr] = None
@@ -543,7 +542,7 @@ class USBInterface:
         #
         # - True to continue the request, False to STALL the endpoint.
         # - Buffer interface object to provide a buffer to the host as part of the
-        #   transfer, if possible.
+        #   transfer, if applicable.
         return False
 
     def handle_interface_control_xfer(self, stage, request):
@@ -624,7 +623,6 @@ class USBInterface:
         # function has returned to the caller.
         if not self._open:
             raise RuntimeError("Not open")
-        print('_submit_xfer', ep_addr, len(data))
         get_usbdevice()._submit_xfer(ep_addr, data, done_cb)
 
     def set_ep_stall(self, ep_addr, stall):
