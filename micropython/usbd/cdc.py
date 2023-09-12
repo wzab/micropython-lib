@@ -290,7 +290,7 @@ class CDCDataInterface(USBInterface):
 
         n = 0
         try:
-            while True:
+            while n < len(b):
                 if self._timeout and time.ticks_diff(time.ticks_ms(), start) > self._timeout:
                     # Timed out
                     return n
