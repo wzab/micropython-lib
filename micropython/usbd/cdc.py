@@ -7,10 +7,7 @@ import errno
 import struct
 from micropython import const
 
-from .device import (
-    USBInterface,
-    get_usbdevice
-)
+from .device import USBInterface, get_usbdevice
 from .utils import (
     Buffer,
     endpoint_descriptor,
@@ -20,17 +17,17 @@ from .utils import (
     STAGE_ACK,
     REQ_TYPE_STANDARD,
     REQ_TYPE_CLASS,
-    EP_IN_FLAG
+    EP_IN_FLAG,
 )
 
-_DEV_CLASS_MISC = const(0xef)
-_CS_DESC_TYPE = const(0x24)   # CS Interface type communication descriptor
-_ITF_ASSOCIATION_DESC_TYPE = const(0xb)  # Interface Association descriptor
+_DEV_CLASS_MISC = const(0xEF)
+_CS_DESC_TYPE = const(0x24)  # CS Interface type communication descriptor
+_ITF_ASSOCIATION_DESC_TYPE = const(0xB)  # Interface Association descriptor
 
 # CDC control interface definitions
 _INTERFACE_CLASS_CDC = const(2)
 _INTERFACE_SUBCLASS_CDC = const(2)  # Abstract Control Mode
-_PROTOCOL_NONE = const(0)   # no protocol
+_PROTOCOL_NONE = const(0)  # no protocol
 
 # CDC descriptor subtype
 # see also CDC120.pdf, table 13
@@ -58,20 +55,21 @@ _LINE_CODING_PARITY_SPACE = const(4)
 _LINE_STATE_DTR = const(1)
 _LINE_STATE_RTS = const(2)
 
-_PARITY_BITS_REPR = 'NOEMS'
-_STOP_BITS_REPR = ('1', '1.5', '2')
+_PARITY_BITS_REPR = "NOEMS"
+_STOP_BITS_REPR = ("1", "1.5", "2")
 
 # Other definitions
 _CDC_VERSION = const(0x0120)  # release number in binary-coded decimal
 
 
 # CDC data interface definitions
-_CDC_ITF_DATA_CLASS = const(0xa)
+_CDC_ITF_DATA_CLASS = const(0xA)
 _CDC_ITF_DATA_SUBCLASS = const(0)
-_CDC_ITF_DATA_PROT = const(0)   # no protocol
+_CDC_ITF_DATA_PROT = const(0)  # no protocol
 
 # Length of the bulk transfer endpoints. Maybe should be configurable?
 _BULK_EP_LEN = const(64)
+
 
 class CDC(io.IOBase):
     # USB CDC serial device class, designed to resemble machine.UART
@@ -84,7 +82,7 @@ class CDC(io.IOBase):
         usb_device = get_usbdevice()
         usb_device.device_class = _DEV_CLASS_MISC
         usb_device.device_subclass = 2
-        usb_device.device_protocol = 1   # Itf association descriptor
+        usb_device.device_protocol = 1  # Itf association descriptor
 
         self._ctrl = CDCControlInterface()
         self._data = CDCDataInterface()
@@ -94,7 +92,9 @@ class CDC(io.IOBase):
 
         # TODO: Add kwargs and call init() with kwargs
 
-    def init(self, baudrate=9600, bits=8, parity=None, stop=1, timeout=None, txbuf=0, rxbuf=0, flow=0):
+    def init(
+        self, baudrate=9600, bits=8, parity=None, stop=1, timeout=None, txbuf=0, rxbuf=0, flow=0
+    ):
         # Configure the CDC serial port. Note that many of these settings like
         # baudrate, bits, parity, stop don't change the USB-CDC device behavior
         # at all, only the "line coding" reported to the USB host.
@@ -129,7 +129,7 @@ class CDC(io.IOBase):
 
     @property
     def baudrate(self):
-        return struct.unpack('<LBBB', self._ctrl._line_coding)[0]
+        return struct.unpack("<LBBB", self._ctrl._line_coding)[0]
 
     @property
     def stop_bits(self):
@@ -145,7 +145,6 @@ class CDC(io.IOBase):
 
     def __repr__(self):
         return f"{self.baudrate}/{self.data_bits}{self.parity}{self.stop_bits} rts={self.rts} dtr={self.dtr}"
-
 
     ###
     ### Set callbacks for operations initiated by the host
@@ -177,8 +176,6 @@ class CDC(io.IOBase):
         raise NotImplementedError  # TODO
 
 
-
-
 class CDCControlInterface(USBInterface):
     # Implements the CDC Control Interface
 
@@ -192,55 +189,65 @@ class CDCControlInterface(USBInterface):
 
         self._line_state = 0  # DTR & RTS
         # Set a default line coding of 115200/8N1
-        self._line_coding = bytearray(b'\x00\xc2\x01\x00\x00\x00\x08')
+        self._line_coding = bytearray(b"\x00\xc2\x01\x00\x00\x00\x08")
 
     def get_itf_descriptor(self, num_eps, itf_idx, str_idx):
         # CDC needs a Interface Association Descriptor (IAD)
         # two interfaces in total
-        desc = ustruct.pack("<BBBBBBBB",
-                            8,
-                            _ITF_ASSOCIATION_DESC_TYPE,
-                            itf_idx,
-                            2,
-                            _INTERFACE_CLASS_CDC,
-                            _INTERFACE_SUBCLASS_CDC,
-                            _PROTOCOL_NONE,
-                            0)
+        desc = ustruct.pack(
+            "<BBBBBBBB",
+            8,
+            _ITF_ASSOCIATION_DESC_TYPE,
+            itf_idx,
+            2,
+            _INTERFACE_CLASS_CDC,
+            _INTERFACE_SUBCLASS_CDC,
+            _PROTOCOL_NONE,
+            0,
+        )
 
         itf, strs = super().get_itf_descriptor(num_eps, itf_idx, str_idx)
         desc += itf
         # Append the CDC class-specific interface descriptor
         # see CDC120-track, p20
-        desc += ustruct.pack("<BBBH",
-                             5,  # bFunctionLength
-                             _CS_DESC_TYPE,  # bDescriptorType
-                             _CDC_FUNC_DESC_HEADER,  # bDescriptorSubtype
-                             _CDC_VERSION)  # cdc version
+        desc += ustruct.pack(
+            "<BBBH",
+            5,  # bFunctionLength
+            _CS_DESC_TYPE,  # bDescriptorType
+            _CDC_FUNC_DESC_HEADER,  # bDescriptorSubtype
+            _CDC_VERSION,
+        )  # cdc version
 
         # CDC-PSTN table3 "Call Management"
         # set to No
-        desc += ustruct.pack("<BBBBB",
-                             5,  # bFunctionLength
-                             _CS_DESC_TYPE,  # bDescriptorType
-                             _CDC_FUNC_DESC_CALL_MANAGEMENT,  # bDescriptorSubtype
-                             0,  # bmCapabilities - XXX no call managment so far
-                             1)  # bDataInterface - interface 1
+        desc += ustruct.pack(
+            "<BBBBB",
+            5,  # bFunctionLength
+            _CS_DESC_TYPE,  # bDescriptorType
+            _CDC_FUNC_DESC_CALL_MANAGEMENT,  # bDescriptorSubtype
+            0,  # bmCapabilities - XXX no call managment so far
+            1,
+        )  # bDataInterface - interface 1
 
         # CDC-PSTN table4 "Abstract Control"
         # set to support line_coding and send_break
-        desc += ustruct.pack("<BBBB", 
-                             4,  # bFunctionLength
-                             _CS_DESC_TYPE,  # bDescriptorType
-                             _CDC_FUNC_DESC_ABSTRACT_CONTROL,  # bDescriptorSubtype
-                             0x6)  # bmCapabilities D1, D2 
+        desc += ustruct.pack(
+            "<BBBB",
+            4,  # bFunctionLength
+            _CS_DESC_TYPE,  # bDescriptorType
+            _CDC_FUNC_DESC_ABSTRACT_CONTROL,  # bDescriptorSubtype
+            0x6,
+        )  # bmCapabilities D1, D2
         # CDC-PSTN "Union"
         # set control interface / data interface number
-        desc += ustruct.pack("<BBBBB",
-                             5,  # bFunctionLength
-                             _CS_DESC_TYPE,  # bDescriptorType
-                             _CDC_FUNC_DESC_UNION,  # bDescriptorSubtype
-                             itf_idx,  # bControlInterface
-                             itf_idx+1)  # bSubordinateInterface0 (data class itf number)
+        desc += ustruct.pack(
+            "<BBBBB",
+            5,  # bFunctionLength
+            _CS_DESC_TYPE,  # bDescriptorType
+            _CDC_FUNC_DESC_UNION,  # bDescriptorSubtype
+            itf_idx,  # bControlInterface
+            itf_idx + 1,
+        )  # bSubordinateInterface0 (data class itf number)
         return desc, strs
 
     def get_endpoint_descriptors(self, ep_addr, str_idx):
@@ -286,8 +293,7 @@ class CDCDataInterface(USBInterface):
     # Implements the CDC Data Interface
 
     def __init__(self):
-        super().__init__(_CDC_ITF_DATA_CLASS, _CDC_ITF_DATA_SUBCLASS,
-                         _CDC_ITF_DATA_PROT)
+        super().__init__(_CDC_ITF_DATA_CLASS, _CDC_ITF_DATA_SUBCLASS, _CDC_ITF_DATA_PROT)
         self._wb = ()  # Optional write Buffer (IN endpoint), set by CDC.init()
         self._rb = ()  # Optional read Buffer (OUT endpoint), set by CDC.init()
         self._timeout = 0  # set from CDC.init() as well
@@ -308,7 +314,9 @@ class CDCDataInterface(USBInterface):
         while mv:
             if self._timeout and time.ticks_diff(time.ticks_ms(), start) > self._timeout:
                 # TODO: in unbuffered mode, need to cancel the pending transfer
-                raise OSError(errno.ETIMEDOUT)  # TODO: check if should do this, or return number of bytes written
+                raise OSError(
+                    errno.ETIMEDOUT
+                )  # TODO: check if should do this, or return number of bytes written
 
             # TODO: check for failed USB transfers
 
@@ -328,6 +336,7 @@ class CDCDataInterface(USBInterface):
                     nonlocal mv
                     # TODO: handle error case
                     mv = mv[nbytes:]
+
                 if not self.xfer_pending(self.ep_in):
                     self.submit_xfer(self.ep_in, mv, cb)
 
@@ -338,13 +347,10 @@ class CDCDataInterface(USBInterface):
         # not necessarily when the USB transfers have all completed
         return len(buf)
 
-
     def _wr_xfer(self):
         # Submit a new IN transfer from the _wb buffer
         if self._wb and self._wb.readable() and not self.xfer_pending(self.ep_in):
-            self.submit_xfer(self.ep_in,
-                             self._wb.pend_read(),
-                             self._wr_cb)
+            self.submit_xfer(self.ep_in, self._wb.pend_read(), self._wr_cb)
 
     def _wr_cb(self, ep, res, num_bytes):
         # Whenever a buffered IN transfer ends
@@ -384,7 +390,6 @@ class CDCDataInterface(USBInterface):
         n = self._readinto(b, start, size)
         return b[:n]  # TODO: check if this allocates if n == len(b)
 
-
     def readinto(self, b):
         return self._readinto(b, time.ticks_ms(), len(b))
 
@@ -403,6 +408,7 @@ class CDCDataInterface(USBInterface):
                     def cb(_e, _r, num_bytes):
                         nonlocal n
                         n += num_bytes
+
                     if not self.xfer_pending(self.ep_out):
                         self.submit_xfer(self.ep_out, memoryview(b)[n:], cb)
                 else:
@@ -419,5 +425,4 @@ class CDCDataInterface(USBInterface):
             return n
         finally:
             if not self._rb and self.xfer_pending(self.ep_out):
-                pass # TODO: cancel any pending no-read-buffer transfer
-
+                pass  # TODO: cancel any pending no-read-buffer transfer

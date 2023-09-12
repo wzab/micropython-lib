@@ -4,7 +4,7 @@ import time
 cdc = CDC()  # adds itself automatically
 cdc.init(txbuf=32, rxbuf=32)
 
-print('trigger reenumerate')
+print("trigger reenumerate")
 
 ud = get_usbdevice()
 ud.reenumerate()
@@ -17,9 +17,8 @@ print(cdc)
 # sending something over CDC
 while True:
     print(cdc)
-    print('writing...')
-    cdc.write(b'Hello World')
-    print('reading...')
+    print("writing...")
+    cdc.write(b"Hello World")
+    print("reading...")
     # receiving something..
     print(cdc.read(1))
-
