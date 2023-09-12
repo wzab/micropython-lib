@@ -327,7 +327,6 @@ class CDCDataInterface(USBInterface):
                 def cb(_e, _r, nbytes):
                     nonlocal mv
                     # TODO: handle error case
-                    print("no_buf_cb", len(mv), nbytes)
                     mv = mv[nbytes:]
                 if not self.xfer_pending(self.ep_in):
                     self.submit_xfer(self.ep_in, mv, cb)
@@ -343,7 +342,6 @@ class CDCDataInterface(USBInterface):
     def _wr_xfer(self):
         # Submit a new IN transfer from the _wb buffer
         if self._wb and self._wb.readable() and not self.xfer_pending(self.ep_in):
-            print('_wr_xfer buffered')
             self.submit_xfer(self.ep_in,
                              self._wb.pend_read(),
                              self._wr_cb)
@@ -351,7 +349,6 @@ class CDCDataInterface(USBInterface):
     def _wr_cb(self, ep, res, num_bytes):
         # Whenever a buffered IN transfer ends
         # TODO: check res
-        print('_wr_cb', res, num_bytes)
         self._wb.finish_read(num_bytes)
         self._wr_xfer()
 
@@ -362,14 +359,12 @@ class CDCDataInterface(USBInterface):
             self.submit_xfer(self.ep_out, self._rb.pend_write(), self._rd_cb)
 
     def _rd_cb(self, ep, res, num_bytes):
-        print('_rd_cb', res, num_bytes)
         # TODO: check res
         self._rb.finish_write(num_bytes)
         self._rd_xfer()
 
     def handle_open(self):
         super().handle_open()
-        print("open")
         self._rd_xfer()
 
     def read(self, size):
