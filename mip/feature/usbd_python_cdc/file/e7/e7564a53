@@ -6,14 +6,16 @@ from micropython import const
 import machine
 import ustruct
 
-if not hasattr(machine, 'disable_irq'):
+if not hasattr(machine, "disable_irq"):
     # Allow testing on the unix port
     # TODO: Remove or make less hacky before merging
     class FakeMachine:
         def disable_irq(self):
             return -99
+
         def enable_irq(self, s):
             pass
+
     machine = FakeMachine()
 
 # Shared constants
@@ -142,7 +144,7 @@ class Buffer:
         ist = machine.disable_irq()
         try:
             self._w = self._n
-            return memoryview(self._b)[self._w:]
+            return memoryview(self._b)[self._w :]
         finally:
             machine.enable_irq(ist)
 
@@ -154,7 +156,9 @@ class Buffer:
             if self._n < self._w:
                 # data was read while the write was happening, so shuffle the buffer back towards index 0
                 # to avoid fragmentation
-                self._b[self._n:self._n+nbytes] = memoryview(self._b)[self._w:self._w+nbytes]
+                self._b[self._n : self._n + nbytes] = memoryview(self._b)[
+                    self._w : self._w + nbytes
+                ]
                 self._n += nbytes
                 self._w += nbytes
             else:
@@ -176,7 +180,7 @@ class Buffer:
 
     def pend_read(self):
         # Return a memoryview that the consumer can read bytes from
-        return memoryview(self._b)[:self._n]
+        return memoryview(self._b)[: self._n]
 
     def finish_read(self, nbytes):
         # Called by the consumer to indicate it read nbytes from the buffer.
