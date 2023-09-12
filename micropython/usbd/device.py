@@ -210,7 +210,7 @@ class _USBDevice:
         self._eps = {}  # rebuild endpoint mapping as we enumerate each interface
         self._ep_cbs = {}
         itf_idx = static.itf_max
-        ep_addr = static.ep_max
+        ep_addr = max(static.ep_max, 1)  # Endpoint 0 reserved for control
         str_idx = static.str_max + len(strs)
         for itf in self._itfs:
             # Get the endpoint descriptors first so we know how many endpoints there are

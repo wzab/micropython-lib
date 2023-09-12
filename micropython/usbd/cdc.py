@@ -161,7 +161,7 @@ class CDCControlInterface(USBInterface):
         return desc, strs
 
     def get_endpoint_descriptors(self, ep_addr, str_idx):
-        self.ep_in = (ep_addr) | EP_IN_FLAG
+        self.ep_in = ep_addr | EP_IN_FLAG
         desc = endpoint_descriptor(self.ep_in, "interrupt", 8, 16)
         return (desc, [], (self.ep_in,))
 
@@ -185,8 +185,8 @@ class CDCDataInterface(USBInterface):
         self._timeout = 0  # set from CDC.init() as well
 
     def get_endpoint_descriptors(self, ep_addr, str_idx):
-        self.ep_in = (ep_addr + 1) | EP_IN_FLAG
-        self.ep_out = (ep_addr + 2)
+        self.ep_in = ep_addr | EP_IN_FLAG
+        self.ep_out = ep_addr
         # one IN / OUT Endpoint
         e_out = endpoint_descriptor(self.ep_out, "bulk", _BULK_EP_LEN, 0)
         e_in = endpoint_descriptor(self.ep_in, "bulk", _BULK_EP_LEN, 0)
