@@ -12,12 +12,14 @@ ud.reenumerate()
 while not cdc.is_open():
     time.sleep_ms(100)
 
+print(cdc)
+
 # sending something over CDC
-print('writing...')
-cdc.write(b'Hello World')
-print('write done')
-print('reading...')
-# receiving something..
-print(cdc.read(10))
-print('done')
+while True:
+    print(cdc)
+    print('writing...')
+    cdc.write(b'Hello World')
+    print('reading...')
+    # receiving something..
+    print(cdc.read(1))
 

@@ -4,6 +4,7 @@ import io
 import ustruct
 import time
 import errno
+import struct
 from micropython import const
 
 from .device import (
@@ -48,15 +49,17 @@ _LINE_CODING_STOP_BIT_1 = const(0)
 _LINE_CODING_STOP_BIT_1_5 = const(1)
 _LINE_CODING_STOP_BIT_2 = const(2)
 
-
 _LINE_CODING_PARITY_NONE = const(0)
 _LINE_CODING_PARITY_ODD = const(1)
 _LINE_CODING_PARITY_EVEN = const(2)
 _LINE_CODING_PARITY_MARK = const(3)
 _LINE_CODING_PARITY_SPACE = const(4)
 
-parity_bits_repr = ['N', 'O', 'E', 'M', 'S']
-stop_bits_repr = ['1', '1.5', '2']
+_LINE_STATE_DTR = const(1)
+_LINE_STATE_RTS = const(2)
+
+_PARITY_BITS_REPR = 'NOEMS'
+_STOP_BITS_REPR = ('1', '1.5', '2')
 
 # Other definitions
 _CDC_VERSION = const(0x0120)  # release number in binary-coded decimal
@@ -109,6 +112,55 @@ class CDC(io.IOBase):
         return self._ctrl.is_open()
 
     ###
+    ### Line State & Line Coding State property getters
+    ###
+
+    @property
+    def rts(self):
+        return bool(self._ctrl._line_state & _LINE_STATE_RTS)
+
+    @property
+    def dtr(self):
+        return bool(self._ctrl._line_state & _LINE_STATE_DTR)
+
+    # Line Coding Representation
+    # Byte 0-3   Byte 4      Byte 5       Byte 6
+    # dwDTERate  bCharFormat bParityType  bDataBits
+
+    @property
+    def baudrate(self):
+        return struct.unpack('<LBBB', self._ctrl._line_coding)[0]
+
+    @property
+    def stop_bits(self):
+        return _STOP_BITS_REPR[self._ctrl._line_coding[4]]
+
+    @property
+    def parity(self):
+        return _PARITY_BITS_REPR[self._ctrl._line_coding[5]]
+
+    @property
+    def data_bits(self):
+        return self._ctrl._line_coding[6]
+
+    def __repr__(self):
+        return f"{self.baudrate}/{self.data_bits}{self.parity}{self.stop_bits} rts={self.rts} dtr={self.dtr}"
+
+
+    ###
+    ### Set callbacks for operations initiated by the host
+    ###
+
+    def set_break_cb(self, cb):
+        self._ctrl.break_cb = cb
+
+    def set_line_state_cb(self, cb):
+        self._ctrl.line_state_cb = cb
+
+    def set_line_coding_cb(self, cb):
+        self._ctrl.line_coding_cb = cb
+
+    ###
     ### io.IOBase stream implementation
     ###
 
@@ -132,15 +184,15 @@ class CDCControlInterface(USBInterface):
 
     def __init__(self):
         super().__init__(_INTERFACE_CLASS_CDC, _INTERFACE_SUBCLASS_CDC, _PROTOCOL_NONE)
-        self.rts = None
-        self.dtr = None
-        self.baudrate = None
-        self.stop_bits = 0
-        self.parity = 0
-        self.data_bits = None
-        self.break_cb = None   # callback for break condition
 
-        self.line_coding_state = bytearray(7)
+        # Callbacks for particular changes initiated by the host
+        self.break_cb = None  # Host sent a "break" condition
+        self.line_state_cb = None
+        self.line_coding_cb = None
+
+        self._line_state = 0  # DTR & RTS
+        # Set a default line coding of 115200/8N1
+        self._line_coding = bytearray(b'\x00\xc2\x01\x00\x00\x00\x08')
 
     def get_itf_descriptor(self, num_eps, itf_idx, str_idx):
         # CDC needs a Interface Association Descriptor (IAD)
@@ -203,15 +255,19 @@ class CDCControlInterface(USBInterface):
         if stage == STAGE_SETUP:
             if req_type == REQ_TYPE_CLASS:
                 if bRequest == _SET_LINE_CODING_REQ:
-                    # XXX check against wLength
-                    return self.line_coding_state
+                    if wLength == len(self._line_coding):
+                        return self._line_coding
+                    return False  # wrong length
                 elif bRequest == _GET_LINE_CODING_REQ:
-                    return self.line_coding_state
+                    return self._line_coding
                 elif bRequest == _SET_CONTROL_LINE_STATE:
-                    # DTR = BIT0, RTS = BIT1
-                    self.dtr = bool(wValue & 0x1)
-                    self.rts = bool(wValue & 0x2)
-                    return b""
+                    if wLength == 0:
+                        self._line_state = wValue
+                        if self.line_state_cb:
+                            self.line_state_cb(wValue)
+                        return b""
+                    else:
+                        return False  # wrong length
                 elif bRequest == _SEND_BREAK_REQ:
                     if self.break_cb:
                         self.break_cb(wValue)
@@ -220,22 +276,10 @@ class CDCControlInterface(USBInterface):
         if stage == STAGE_DATA:
             if req_type == REQ_TYPE_CLASS:
                 if bRequest == _SET_LINE_CODING_REQ:
-                    # Byte 0-3   Byte 4      Byte 5       Byte 6
-                    # dwDTERate  bCharFormat bParityType  bDataBits
-                    self.baudrate, self.stop_bits, self.parity, self.data_bits = ustruct.unpack(
-                        '<LBBB', self.line_coding_state)
+                    if self.line_coding_cb:
+                        self.line_coding_cb(self._line_coding)
+
         return True
-
-    def set_break_cb(self, cb):
-        # sets a callback for the break condition
-        # callback must have one parameter (duration in msec)
-        self.break_cb = cb
-
-    def get_control_line(self):
-        return self.dtr, self.rts
-
-    def __repr__(self):
-        return f"{self.baudrate}/{self.data_bits}/{parity_bits_repr[self.parity]}/{stop_bits_repr[self.stop_bits]} rts={self.rts} dtr={self.dtr} "
 
 
 class CDCDataInterface(USBInterface):
