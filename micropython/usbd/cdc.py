@@ -93,7 +93,7 @@ class CDC(io.IOBase):
         # TODO: Add kwargs and call init() with kwargs
 
     def init(
-        self, baudrate=9600, bits=8, parity=None, stop=1, timeout=None, txbuf=0, rxbuf=0, flow=0
+        self, baudrate=9600, bits=8, parity=None, stop=1, timeout=None, txbuf=64, rxbuf=64, flow=0
     ):
         # Configure the CDC serial port. Note that many of these settings like
         # baudrate, bits, parity, stop don't change the USB-CDC device behavior
@@ -104,9 +104,12 @@ class CDC(io.IOBase):
         if flow != 0:
             raise NotImplementedError  # TODO: flow control not supported
 
+        if not (txbuf and rxbuf):
+            raise ValueError()  # Buffer sizes are required
+
         self._data._timeout = timeout
-        self._data._wb = Buffer(txbuf) if txbuf else None
-        self._data._rb = Buffer(rxbuf) if rxbuf else None
+        self._data._wb = Buffer(txbuf)
+        self._data._rb = Buffer(rxbuf)
 
     def is_open(self):
         return self._ctrl.is_open()
@@ -313,55 +316,40 @@ class CDCDataInterface(USBInterface):
         start = time.ticks_ms()
         while mv:
             if self._timeout and time.ticks_diff(time.ticks_ms(), start) > self._timeout:
-                # TODO: in unbuffered mode, need to cancel the pending transfer
                 raise OSError(
                     errno.ETIMEDOUT
                 )  # TODO: check if should do this, or return number of bytes written
 
             # TODO: check for failed USB transfers
 
-            if self._wb:
-                # Keep pushing buf into _wb into it's all gone
-                nbytes = self._wb.write(mv)
-                if nbytes:
-                    mv = mv[nbytes:]
-                self._wr_xfer()  # make sure a transfer is running from _wb
-            else:
-                # Transmit 'buf' synchronously.
-                #
-                # TODO: Currently this tries the whole write in one pass,
-                # need to check if better to send _BULK_EP_LEN at a time from
-                # here or if TinyUSB will fragment for us
-                def cb(_e, _r, nbytes):
-                    nonlocal mv
-                    # TODO: handle error case
-                    mv = mv[nbytes:]
-
-                if not self.xfer_pending(self.ep_in):
-                    self.submit_xfer(self.ep_in, mv, cb)
+            # Keep pushing buf into _wb into it's all gone
+            nbytes = self._wb.write(mv)
+            if nbytes:
+                mv = mv[nbytes:]
+            self._wr_xfer()  # make sure a transfer is running from _wb
 
             if mv:
                 time.sleep_ms(10)
 
-        # Note: if a tx buffer is set then this returns when all bytes are in the tx buffer,
+        # Note: This returns when all bytes are in the write buffer,
         # not necessarily when the USB transfers have all completed
         return len(buf)
 
     def _wr_xfer(self):
         # Submit a new IN transfer from the _wb buffer
-        if self._wb and self._wb.readable() and not self.xfer_pending(self.ep_in):
+        if self._wb.readable() and not self.xfer_pending(self.ep_in):
             self.submit_xfer(self.ep_in, self._wb.pend_read(), self._wr_cb)
 
     def _wr_cb(self, ep, res, num_bytes):
-        # Whenever a buffered IN transfer ends
+        # Whenever an IN transfer ends
         # TODO: check res
         self._wb.finish_read(num_bytes)
         self._wr_xfer()
 
     def _rd_xfer(self):
         # Keep an active OUT transfer to read data from the host,
-        # whenever there is a receive buffer with room for new data
-        if self._rb and self._rb.writable() and not self.xfer_pending(self.ep_out):
+        # whenever the receive buffer has room for new data
+        if self._rb.writable() and not self.xfer_pending(self.ep_out):
             self.submit_xfer(self.ep_out, self._rb.pend_write(), self._rd_cb)
 
     def _rd_cb(self, ep, res, num_bytes):
@@ -380,15 +368,12 @@ class CDCDataInterface(USBInterface):
         # Allocate a suitable buffer to read into
         if size >= 0:
             b = bytearray(size)
-        elif self._rb:
-            # for size == -1 and read buffer, return however many bytes are ready
-            b = bytearray(self._rb.readable())
         else:
-            # No read buffer, so try to read up to the endpoint length
-            b = bytearray(_BULK_EP_LEN)
+            # for size == -1, return however many bytes are ready
+            b = bytearray(self._rb.readable())
 
         n = self._readinto(b, start, size)
-        return b[:n]  # TODO: check if this allocates if n == len(b)
+        return b[:n] if n < len(b) else b
 
     def readinto(self, b):
         return self._readinto(b, time.ticks_ms(), len(b))
@@ -397,32 +382,19 @@ class CDCDataInterface(USBInterface):
         # TODO: Support non-blocking
 
         n = 0
-        try:
-            while n < len(b):
-                if self._timeout and time.ticks_diff(time.ticks_ms(), start) > self._timeout:
-                    # Timed out
-                    return n
+        m = memoryview(b)
+        while n < len(b):
+            if self._timeout and time.ticks_diff(time.ticks_ms(), start) > self._timeout:
+                # Timed out
+                return n
 
-                if not self._rb:
-                    # no read buffer, so submit a transfer directly into 'res'
-                    def cb(_e, _r, num_bytes):
-                        nonlocal n
-                        n += num_bytes
-
-                    if not self.xfer_pending(self.ep_out):
-                        self.submit_xfer(self.ep_out, memoryview(b)[n:], cb)
-                else:
-                    # there is a read buffer, so try and read out of it
-                    n += self._rb.readinto(b[n:])
-
-                if n and size == -1:
+            # copy out of the read buffer if there is anything available
+            if self._rb.readable():
+                n += self._rb.readinto(m if n == 0 else m[n:])
+                if size == -1:
                     # For size == -1, return as soon as we have something
                     return n
+            else:
+                time.sleep_ms(10)
 
-                if n < len(b):
-                    time.sleep_ms(10)
-
-            return n
-        finally:
-            if not self._rb and self.xfer_pending(self.ep_out):
-                pass  # TODO: cancel any pending no-read-buffer transfer
+        return n
