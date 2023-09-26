@@ -1,4 +1,21 @@
+import micropython
+
 from utils import Buffer
+import utils
+
+if not hasattr(utils.machine, "disable_irq"):
+    # Allow testing on the unix port, and as a bonus have tests fail if the buffer
+    # allocates inside a critical section.
+    class FakeMachine:
+        def disable_irq(self):
+            return micropython.heap_lock()
+
+        def enable_irq(self, was_locked):
+            if not was_locked:
+                micropython.heap_unlock()
+
+    utils.machine = FakeMachine()
+
 
 # TODO: Makes this a test which can be integrated somewhere
 
@@ -65,11 +82,13 @@ w[:2] = b"12"
 b.finish_write(2)
 
 # Expected final state of buffer
-assert b.read() == b"mnopABXY12"
+tmp = bytearray(b.readable())
+assert b.readinto(tmp) == len(tmp)
+assert tmp == b"mnopABXY12"
 
 # Now buffer is empty again
-assert b.read() == b""
 assert b.readable() == 0
+assert b.readinto(tmp) == 0
 assert b.writable() == 16
 
 print("Done!")
