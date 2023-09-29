@@ -6,18 +6,6 @@ from micropython import const
 import machine
 import ustruct
 
-if not hasattr(machine, "disable_irq"):
-    # Allow testing on the unix port
-    # TODO: Remove or make less hacky before merging
-    class FakeMachine:
-        def disable_irq(self):
-            return -99
-
-        def enable_irq(self, s):
-            pass
-
-    machine = FakeMachine()
-
 # Shared constants
 #
 # It's a tough decision of when to make a constant "shared" like this. "Private" constants have no resource use, but these will take up flash space for the name. Suggest deciding on basis of:
@@ -127,9 +115,12 @@ class Buffer:
     # approximate a Python-based single byte ringbuffer.
     #
     def __init__(self, length):
-        self._b = bytearray(length)
-        self._n = 0  # number of bytes in buffer read to read, starting at index 0
-        self._w = length  # start index of a pending write into the buffer, if any. equals len(self._b) if no write is pending.
+        self._b = memoryview(bytearray(length))
+        self._n = 0  # number of bytes in buffer read to read, starting at index
+                     # 0. Updated by both producer & consumer.
+        self._w = length  # start index of a pending write into the buffer, if
+                          # any. equals len(self._b) if no write is
+                          # pending. Updated by producer only.
 
     def writable(self):
         # Number of writable bytes in the buffer. Assumes no pending write is outstanding.
@@ -141,30 +132,33 @@ class Buffer:
 
     def pend_write(self):
         # Returns a memoryview that the producer can write bytes into.
-        ist = machine.disable_irq()
-        try:
-            self._w = self._n
-            return memoryview(self._b)[self._w :]
-        finally:
-            machine.enable_irq(ist)
+        # start the write at self._n, the end of data waiting to read
+        #
+        # (No critical section needed as self._w is only updated by the producer.)
+        self._w = self._n
+        return self._b[self._w:]
 
     def finish_write(self, nbytes):
         # Called by the producer to indicate it wrote nbytes into the buffer.
         ist = machine.disable_irq()
         try:
             assert nbytes <= len(self._b) - self._w  # can't say we wrote more than was pended
-            if self._n < self._w:
-                # data was read while the write was happening, so shuffle the buffer back towards index 0
-                # to avoid fragmentation
-                self._b[self._n : self._n + nbytes] = memoryview(self._b)[
-                    self._w : self._w + nbytes
-                ]
-                self._n += nbytes
-                self._w += nbytes
-            else:
+            if self._n == self._w:
                 # no data was read while the write was happening, so the buffer is already in place
-                assert self._n == self._w
+                # (this is the fast path)
                 self._n += nbytes
+            else:
+                # Slow path: data was read while the write was happening, so
+                # shuffle the newly written bytes back towards index 0 to avoid fragmentation
+                #
+                # As this updates self._n we have to do it in the critical
+                # section, so do it byte by byte to avoid allocating.
+                while nbytes > 0:
+                    self._b[self._n] = self._b[self._w]
+                    self._n += 1
+                    self._w += 1
+                    nbytes -= 1
+
             self._w = len(self._b)
         finally:
             machine.enable_irq(ist)
@@ -179,8 +173,8 @@ class Buffer:
         return to_w
 
     def pend_read(self):
-        # Return a memoryview that the consumer can read bytes from
-        return memoryview(self._b)[: self._n]
+        # Return a memoryview slice that the consumer can read bytes from
+        return self._b[: self._n]
 
     def finish_read(self, nbytes):
         # Called by the consumer to indicate it read nbytes from the buffer.
@@ -196,6 +190,7 @@ class Buffer:
                 i += 1
         finally:
             machine.enable_irq(ist)
+
 
     def readinto(self, b):
         # Helper method for the consumer to read out of the buffer in one call
