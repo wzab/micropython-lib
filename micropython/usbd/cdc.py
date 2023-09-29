@@ -363,8 +363,8 @@ class CDCDataInterface(USBInterface):
 
     def _wr_cb(self, ep, res, num_bytes):
         # Whenever an IN transfer ends
-        # TODO: check res
-        self._wb.finish_read(num_bytes)
+        if res == 0:
+            self._wb.finish_read(num_bytes)
         self._wr_xfer()
 
     def _rd_xfer(self):
@@ -374,8 +374,8 @@ class CDCDataInterface(USBInterface):
             self.submit_xfer(self.ep_out, self._rb.pend_write(), self._rd_cb)
 
     def _rd_cb(self, ep, res, num_bytes):
-        # TODO: check res
-        self._rb.finish_write(num_bytes)
+        if res == 0:
+            self._rb.finish_write(num_bytes)
         self._rd_xfer()
 
     def handle_open(self):
