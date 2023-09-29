@@ -71,6 +71,20 @@ _CDC_ITF_DATA_PROT = const(0)  # no protocol
 # Length of the bulk transfer endpoints. Maybe should be configurable?
 _BULK_EP_LEN = const(64)
 
+# MicroPython error constants (negated as IOBase.ioctl uses negative return values for error codes)
+# these must match values in py/mperrno.h
+_MP_EINVAL = const(-22)
+_MP_ETIMEDOUT = const(-110)
+
+# MicroPython stream ioctl requests, same as py/stream.h
+_MP_STREAM_FLUSH = const(1)
+_MP_STREAM_POLL = const(3)
+
+# MicroPython ioctl poll values, same as py/stream.h
+_MP_STREAM_POLL_WR = const(0x04)
+_MP_STREAM_POLL_RD = const(0x01)
+_MP_STREAM_POLL_HUP = const(0x10)
+
 
 class CDC(io.IOBase):
     # USB CDC serial device class, designed to resemble machine.UART
@@ -184,7 +198,7 @@ class CDC(io.IOBase):
         return self._data.write(buf)
 
     def ioctl(self, req, arg):
-        raise NotImplementedError  # TODO
+        return self._data.ioctl(req, arg)
 
 
 class CDCControlInterface(USBInterface):
@@ -324,11 +338,6 @@ class CDCDataInterface(USBInterface):
     def write(self, buf):
         # use a memoryview to track how much of 'buf' we've written so far
         # (unfortunately, this means a 1 block allocation for each write, but it's otherwise allocation free.)
-        #
-        # Note: this returns the number of bytes written to the USB write
-        # buffer, not the number delivered to the host. This is similar to
-        # machine.UART with hardware FIFOs, except that in that case the FIFO is
-        # guaranteed to empty at a fixed rate.
         start = time.ticks_ms()
         mv = memoryview(buf)
         while True:
@@ -414,3 +423,24 @@ class CDCDataInterface(USBInterface):
             machine.idle()
 
         return n or None
+
+    def ioctl(self, req, arg):
+        if req == _MP_STREAM_POLL:
+            return (
+                (_MP_STREAM_POLL_WR if (arg & _MP_STREAM_POLL_WR) and self._wb.writable() else 0) |
+                (_MP_STREAM_POLL_RD if (arg & _MP_STREAM_POLL_RD) and self._rd.readable() else 0) |
+                # using the USB level "open" (i.e. connected to host) for !HUP, not !DTR (port is open)
+                (_MP_STREAM_POLL_HUP if (arg & _MP_STREAM_POLL_HUP) and not self.is_open() else 0)
+                )
+        elif req == _MP_STREAM_FLUSH:
+            start = time.ticks_ms()
+            # Wait until write buffer contains no bytes for the lower TinyUSB layer to "read"
+            while self._wb.readable():
+                if not self.is_open():
+                    return _MP_EINVAL
+                if time.ticks_diff(time.ticks_ms(), start) > self._timeout:
+                    return _MP_ETIMEDOUT
+                machine.idle()
+            return 0
+
+        return _MP_EINVAL
