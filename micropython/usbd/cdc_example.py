@@ -1,24 +1,24 @@
 from usbd import CDC, get_usbdevice
+import os
 import time
 
 cdc = CDC()  # adds itself automatically
-cdc.init(txbuf=32, rxbuf=32)
+cdc.init(timeout=0)  # zero timeout makes this non-blocking, suitable for os.dupterm()
 
-print("trigger reenumerate")
+print("Triggering reenumerate...")
 
 ud = get_usbdevice()
 ud.reenumerate()
 
-while not cdc.is_open():
-    time.sleep_ms(100)
+print('Waiting for CDC port to open...')
 
-print(cdc)
+# cdc.is_open() returns true after enumeration finishes.
+# cdc.dtr is not set until the host opens the port and asserts DTR
+while not (cdc.is_open() and cdc.dtr):
+    time.sleep_ms(20)
 
-# sending something over CDC
-while True:
-    print(cdc)
-    print("writing...")
-    cdc.write(b"Hello World")
-    print("reading...")
-    # receiving something..
-    print(cdc.read(1))
+print('CDC port is open, duplicating REPL...')
+
+old_term = os.dupterm(cdc)
+
+print('Welcome to REPL on CDC implemented in Python?')
