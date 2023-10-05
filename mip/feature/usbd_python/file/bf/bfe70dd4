@@ -105,7 +105,7 @@ class MIDIInterface(USBInterface):
         return self.rb.get()
 
     def receive_data_callback(self, ep_addr, result, xferred_bytes):
-        for i in range(0, xferred_bytes):
+        for i in range(xferred_bytes):
             self.rb.put(self.rx_data[i])
         self.submit_xfer(0x03, self.rx_data, self.receive_data_callback)
 

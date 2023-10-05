@@ -384,7 +384,7 @@ class _USBDevice:
         # True - Continue transfer, no data
         # False - STALL transfer
         # Object with buffer interface - submit this data for the control transfer
-        if type(result) == bool:
+        if isinstance(result, bool):
             return result
 
         return self._usbd.control_xfer(request, result)

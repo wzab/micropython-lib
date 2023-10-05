@@ -1,1 +1,1 @@
-{"v":1,"hashes":[["usbd/__init__.py","542385f8"],["usbd/cdc.py","9d1b0af5"],["usbd/device.py","5eaea79f"],["usbd/hid.py","7c24d40b"],["usbd/hid_keypad.py","c3a4f5f4"],["usbd/midi.py","557cc60f"],["usbd/utils.py","ae44862c"]],"version":"0.1.0"}
+{"v":1,"hashes":[["usbd/__init__.py","542385f8"],["usbd/cdc.py","9d1b0af5"],["usbd/device.py","f7d55f1c"],["usbd/hid.py","7c24d40b"],["usbd/hid_keypad.py","c3a4f5f4"],["usbd/midi.py","bfe70dd4"],["usbd/utils.py","ae44862c"]],"version":"0.1.0"}
