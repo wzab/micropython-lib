@@ -341,8 +341,6 @@ class CDCDataInterface(USBInterface):
         start = time.ticks_ms()
         mv = memoryview(buf)
         while True:
-            # TODO: check for failed USB transfers
-
             # Keep pushing buf into _wb into it's all gone
             nbytes = self._wb.write(mv)
             self._wr_xfer()  # make sure a transfer is running from _wb
@@ -357,7 +355,7 @@ class CDCDataInterface(USBInterface):
                 return len(buf) - len(mv)
 
     def _wr_xfer(self):
-        # Submit a new IN transfer from the _wb buffer
+        # Submit a new IN transfer from the _wb buffer, if needed
         if self.is_open() and self._wb.readable() and not self.xfer_pending(self.ep_in):
             self.submit_xfer(self.ep_in, self._wb.pend_read(), self._wr_cb)
 
@@ -414,6 +412,7 @@ class CDCDataInterface(USBInterface):
             # copy out of the read buffer if there is anything available
             if self._rb.readable():
                 n += self._rb.readinto(m if n == 0 else m[n:])
+                self._rd_xfer()  # if _rd was previously full, no transfer will be running
                 if n == len(b):
                     break  # Done, exit before we reach the sleep
 
