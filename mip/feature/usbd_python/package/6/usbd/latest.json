@@ -1,1 +1,1 @@
-{"v":1,"hashes":[["usbd/__init__.mpy","92a1eb02"],["usbd/cdc.mpy","928d7d41"],["usbd/device.mpy","b1e68534"],["usbd/hid.mpy","f2ff20f0"],["usbd/hid_keypad.mpy","a986b75b"],["usbd/midi.mpy","a518375e"],["usbd/utils.mpy","a79d6d42"]],"version":"0.1.0"}
+{"v":1,"hashes":[["usbd/__init__.mpy","a74e3429"],["usbd/cdc.mpy","822d9582"],["usbd/device.mpy","22aec1dd"],["usbd/hid.mpy","20d0c77f"],["usbd/midi.mpy","fcb5e889"],["usbd/utils.mpy","9145f35a"]],"version":"0.1.0"}

@@ -11,7 +11,6 @@ from micropython import const
 from .device import USBInterface, get_usbdevice
 from .utils import (
     Buffer,
-    endpoint_descriptor,
     split_bmRequestType,
     STAGE_SETUP,
     STAGE_DATA,
@@ -23,7 +22,6 @@ from .utils import (
 
 _DEV_CLASS_MISC = const(0xEF)
 _CS_DESC_TYPE = const(0x24)  # CS Interface type communication descriptor
-_ITF_ASSOCIATION_DESC_TYPE = const(0xB)  # Interface Association descriptor
 
 # CDC control interface definitions
 _INTERFACE_CLASS_CDC = const(2)
@@ -62,6 +60,9 @@ _STOP_BITS_REPR = ("1", "1.5", "2")
 # Other definitions
 _CDC_VERSION = const(0x0120)  # release number in binary-coded decimal
 
+# Number of endpoints in each interface
+_CDC_CONTROL_EP_NUM = const(1)
+_CDC_DATA_EP_NUM = const(2)
 
 # CDC data interface definitions
 _CDC_ITF_DATA_CLASS = const(0xA)
@@ -91,7 +92,8 @@ class CDC(io.IOBase):
     # with some additional methods.
     #
     # This is a standalone class, instead of a USBInterface subclass, because
-    # CDC consists of multiple interfaces (CDC control and CDC data)
+    # CDC consists of multiple interfaces (CDC control and CDC data) and also
+    # so it can derive from io.IOBase.
     def __init__(self, **kwargs):
         # For CDC to work, the device class must be set to Interface Association
         usb_device = get_usbdevice()
@@ -216,7 +218,7 @@ class CDCControlInterface(USBInterface):
     # Implements the CDC Control Interface
 
     def __init__(self):
-        super().__init__(_INTERFACE_CLASS_CDC, _INTERFACE_SUBCLASS_CDC, _PROTOCOL_NONE)
+        super().__init__()
 
         # Callbacks for particular changes initiated by the host
         self.break_cb = None  # Host sent a "break" condition
@@ -229,73 +231,62 @@ class CDCControlInterface(USBInterface):
 
         self.ep_in = None  # Set when enumeration happens
 
-    def get_itf_descriptor(self, num_eps, itf_idx, str_idx):
-        # CDC needs a Interface Association Descriptor (IAD)
-        # two interfaces in total
-        desc = ustruct.pack(
-            "<BBBBBBBB",
-            8,
-            _ITF_ASSOCIATION_DESC_TYPE,
-            itf_idx,
-            2,
-            _INTERFACE_CLASS_CDC,
-            _INTERFACE_SUBCLASS_CDC,
-            _PROTOCOL_NONE,
-            0,
-        )
+    def descriptor_config_cb(self, desc, itf_num, ep_num):
+        # CDC needs a Interface Association Descriptor (IAD) connecting the Control & Data interfaces
+        desc.interface_assoc(itf_num, 2, _INTERFACE_CLASS_CDC, _INTERFACE_SUBCLASS_CDC)
 
-        itf, strs = super().get_itf_descriptor(num_eps, itf_idx, str_idx)
-        desc += itf
+        # Now add the Control interface descriptor
+        desc.interface(itf_num, _CDC_CONTROL_EP_NUM, _INTERFACE_CLASS_CDC, _INTERFACE_SUBCLASS_CDC)
+
         # Append the CDC class-specific interface descriptor
         # see CDC120-track, p20
-        desc += ustruct.pack(
+        desc.pack(
             "<BBBH",
             5,  # bFunctionLength
             _CS_DESC_TYPE,  # bDescriptorType
             _CDC_FUNC_DESC_HEADER,  # bDescriptorSubtype
-            _CDC_VERSION,
-        )  # cdc version
+            _CDC_VERSION,  # cdc version
+        )
 
         # CDC-PSTN table3 "Call Management"
         # set to No
-        desc += ustruct.pack(
+        desc.pack(
             "<BBBBB",
             5,  # bFunctionLength
             _CS_DESC_TYPE,  # bDescriptorType
             _CDC_FUNC_DESC_CALL_MANAGEMENT,  # bDescriptorSubtype
             0,  # bmCapabilities - XXX no call managment so far
-            1,
-        )  # bDataInterface - interface 1
+            itf_num + 1,  # bDataInterface - interface 1
+        )
 
         # CDC-PSTN table4 "Abstract Control"
         # set to support line_coding and send_break
-        desc += ustruct.pack(
+        desc.pack(
             "<BBBB",
             4,  # bFunctionLength
             _CS_DESC_TYPE,  # bDescriptorType
             _CDC_FUNC_DESC_ABSTRACT_CONTROL,  # bDescriptorSubtype
-            0x6,
-        )  # bmCapabilities D1, D2
+            0x6,  # bmCapabilities D1, D2
+        )
+
         # CDC-PSTN "Union"
         # set control interface / data interface number
-        desc += ustruct.pack(
+        desc.pack(
             "<BBBBB",
             5,  # bFunctionLength
             _CS_DESC_TYPE,  # bDescriptorType
             _CDC_FUNC_DESC_UNION,  # bDescriptorSubtype
-            itf_idx,  # bControlInterface
-            itf_idx + 1,
-        )  # bSubordinateInterface0 (data class itf number)
-        return desc, strs
+            itf_num,  # bControlInterface
+            itf_num + 1,  # bSubordinateInterface0 (data class itf number)
+        )
 
-    def get_endpoint_descriptors(self, ep_addr, str_idx):
-        self.ep_in = ep_addr | EP_IN_FLAG
-        desc = endpoint_descriptor(self.ep_in, "interrupt", 8, 16)
-        return (desc, [], (self.ep_in,))
+        # Descriptor for a single endpoint
+        self.ep_in = ep_num | EP_IN_FLAG
+        desc.endpoint(self.ep_in, "interrupt", 8, 16)
 
     def handle_interface_control_xfer(self, stage, request):
         # Handle class-specific interface control transfers
-        bmRequestType, bRequest, wValue, _, wLength = request
+        bmRequestType, bRequest, wValue, _, wLength = struct.unpack("BBHHH", request)
         recipient, req_type, req_dir = split_bmRequestType(bmRequestType)
         if stage == STAGE_SETUP:
             if req_type == REQ_TYPE_CLASS:
@@ -331,20 +322,29 @@ class CDCDataInterface(USBInterface):
     # Implements the CDC Data Interface
 
     def __init__(self):
-        super().__init__(_CDC_ITF_DATA_CLASS, _CDC_ITF_DATA_SUBCLASS, _CDC_ITF_DATA_PROT)
+        super().__init__()
+
         self._wb = ()  # Optional write Buffer (IN endpoint), set by CDC.init()
         self._rb = ()  # Optional read Buffer (OUT endpoint), set by CDC.init()
         self._timeout = 1000  # set from CDC.init() as well
 
         self.ep_in = self.ep_out = None  # Set when enumeration happens
 
-    def get_endpoint_descriptors(self, ep_addr, str_idx):
-        self.ep_in = ep_addr | EP_IN_FLAG
-        self.ep_out = ep_addr
-        # one IN / OUT Endpoint
-        e_out = endpoint_descriptor(self.ep_out, "bulk", _BULK_EP_LEN, 0)
-        e_in = endpoint_descriptor(self.ep_in, "bulk", _BULK_EP_LEN, 0)
-        return (e_out + e_in, [], (self.ep_out, self.ep_in))
+    def descriptor_config_cb(self, desc, itf_num, ep_num):
+        # Add the standard interface descriptor
+        desc.interface(
+            itf_num,
+            _CDC_DATA_EP_NUM,
+            _CDC_ITF_DATA_CLASS,
+            _CDC_ITF_DATA_SUBCLASS,
+            _CDC_ITF_DATA_PROT,
+        )
+
+        # Two endpoints, bulk OUT and IN
+        self.ep_out = ep_num
+        self.ep_in = ep_num | EP_IN_FLAG
+        desc.endpoint(self.ep_out, "bulk", _BULK_EP_LEN, 0)
+        desc.endpoint(self.ep_in, "bulk", _BULK_EP_LEN, 0)
 
     def write(self, buf):
         # use a memoryview to track how much of 'buf' we've written so far

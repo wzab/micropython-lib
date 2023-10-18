@@ -4,7 +4,7 @@
 # Some constants and stateless utility functions for working with USB descriptors and requests.
 from micropython import const
 import machine
-import ustruct
+import struct
 
 # Shared constants
 #
@@ -39,28 +39,148 @@ RESULT_INVALID = const(4)
 
 
 # Non-shared constants, used in this function only
+_STD_DESC_INTERFACE_LEN = const(9)
+_STD_DESC_INTERFACE_TYPE = const(0x4)
+_STD_DESC_INTERFACE_ASSOC = const(0xB)
+
 _STD_DESC_ENDPOINT_LEN = const(7)
 _STD_DESC_ENDPOINT_TYPE = const(0x5)
 
+_DESC_BUF_INITIAL_SIZE = const(128)
 
-def endpoint_descriptor(bEndpointAddress, bmAttributes, wMaxPacketSize, bInterval=1):
-    # Utility function to generate a standard Endpoint descriptor bytes object, with
-    # the properties specified in the parameter list.
+_INTERFACE_CLASS_VENDOR = const(0xFF)
+_INTERFACE_SUBCLASS_NONE = const(0x00)
+
+_PROTOCOL_NONE = const(0x00)
+
+_ITF_ASSOCIATION_DESC_TYPE = const(0xB)  # Interface Association descriptor
+
+
+class Descriptor:
+    # Wrapper class for building a descriptor in-place in a reusable buffer.
     #
-    # See USB 2.0 specification section 9.6.6 Endpoint p269
-    #
-    # As well as a numeric value, bmAttributes can be a string value to represent
-    # common endpoint types: "control", "bulk", "interrupt".
-    bmAttributes = {"control": 0, "bulk": 2, "interrupt": 3}.get(bmAttributes, bmAttributes)
-    return ustruct.pack(
-        "<BBBBHB",
-        _STD_DESC_ENDPOINT_LEN,
-        _STD_DESC_ENDPOINT_TYPE,
-        bEndpointAddress,
-        bmAttributes,
-        wMaxPacketSize,
-        bInterval,
-    )
+    # Some of this recreates io.BytesIO, but in a way that supports struct.pack_into()
+    def __init__(self):
+        self.b = bytearray(_DESC_BUF_INITIAL_SIZE)
+        self._l = 0  # length of valid data in buffer
+
+    def reset(self):
+        # Clear the descriptor, without freeing any of the memory associated with 'b'
+        #
+        # (The logic here is that the host may ask for the long descriptor again
+        # at any point in the future, following a bus reset, so we should hold
+        # the memory to avoid fragmentation or memory pressure issues.)
+        self._l = 0
+
+    def pack(self, fmt, *args):
+        # Utility function to pack new data to the end of the descriptor
+        # buffer.
+        #
+        # Arguments are the same as struct.pack(), but it fills the
+        # pre-allocated descriptor buffer (growing if needed), instead of
+        # returning anything.
+        self.pack_into(fmt, self._l, *args)
+
+    def pack_into(self, fmt, offs, *args):
+        # Utility function to pack new data into the descriptor at offset 'offs'.
+        #
+        # Grows the backing bytearray 'b' as needed to hold the new data.
+        end = offs + struct.calcsize(fmt)
+        if end > len(self.b):
+            # Need to grow. To avoid too many allocations, we do two:
+            # one to make a temporary bytes object of the correct length,
+            # and then a second one when we add this to self.b.
+            # ...
+            # To avoid lots of heap churn for small amounts of data, always
+            # grow by at least 16 bytes.
+            self.b += b"\x00" * min(16, end - len(self.b))
+        struct.pack_into(fmt, self.b, offs, *args)
+        self._l = max(self._l, end)
+
+    # TODO: At the moment many of these arguments are named the same as the relevant field
+    # in the spec, as this is easier to understand. Can save some code size by collapsing them
+    # down.
+
+    def interface(
+        self,
+        bInterfaceNumber,
+        bNumEndpoints,
+        bInterfaceClass=_INTERFACE_CLASS_VENDOR,
+        bInterfaceSubClass=_INTERFACE_SUBCLASS_NONE,
+        bInterfaceProtocol=_PROTOCOL_NONE,
+        iInterface=0,
+    ):
+        # Utility function to append a standard Interface descriptor, with
+        # the properties specified in the parameter list.
+        #
+        # Defaults for bInterfaceClass, SubClass and Protocol are a "vendor"
+        # device.
+        #
+        # Note that iInterface is a string index number. If set, it should be set
+        # by the caller USBInterface to the result of self._get_str_index(s),
+        # where 's' is a string found in self.strs.
+        self.pack(
+            "BBBBBBBBB",
+            _STD_DESC_INTERFACE_LEN,  # bLength
+            _STD_DESC_INTERFACE_TYPE,  # bDescriptorType
+            bInterfaceNumber,
+            0,  # bAlternateSetting, not currently supported
+            bNumEndpoints,
+            bInterfaceClass,
+            bInterfaceSubClass,
+            bInterfaceProtocol,
+            iInterface,
+        )
+
+    def endpoint(self, bEndpointAddress, bmAttributes, wMaxPacketSize, bInterval=1):
+        # Utility function to append a standard Endpoint descriptor, with
+        # the properties specified in the parameter list.
+        #
+        # See USB 2.0 specification section 9.6.6 Endpoint p269
+        #
+        # As well as a numeric value, bmAttributes can be a string value to represent
+        # common endpoint types: "control", "bulk", "interrupt".
+        if bmAttributes == "control":
+            bmAttributes = 0
+        elif bmAttributes == "bulk":
+            bmAttributes = 2
+        elif bmAttributes == "interrupt":
+            bmAttributes = 3
+
+        self.pack(
+            "<BBBBHB",
+            _STD_DESC_ENDPOINT_LEN,
+            _STD_DESC_ENDPOINT_TYPE,
+            bEndpointAddress,
+            bmAttributes,
+            wMaxPacketSize,
+            bInterval,
+        )
+
+    def interface_assoc(
+        self,
+        bFirstInterface,
+        bInterfaceCount,
+        bFunctionClass,
+        bFunctionSubClass,
+        bFunctionProtocol=_PROTOCOL_NONE,
+        iFunction=0,
+    ):
+        # Utility function to append an Interface Association descriptor,
+        # with the properties specified in the parameter list.
+        #
+        # See USB ECN: Interface Association Descriptor.
+        self.pack(
+            "<BBBBBBBB",
+            8,
+            _ITF_ASSOCIATION_DESC_TYPE,
+            bFirstInterface,
+            bInterfaceCount,
+            bFunctionClass,
+            bFunctionSubClass,
+            bFunctionProtocol,
+            iFunction,
+        )
 
 
 def split_bmRequestType(bmRequestType):
@@ -183,6 +303,8 @@ class Buffer:
 
     def finish_read(self, nbytes):
         # Called by the consumer to indicate it read nbytes from the buffer.
+        if not nbytes:
+            return
         ist = machine.disable_irq()
         try:
             assert nbytes <= self._n  # can't say we read more than was available
