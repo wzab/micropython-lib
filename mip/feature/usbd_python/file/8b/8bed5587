@@ -404,15 +404,13 @@ class _USBDevice:
             print(f"Unexpected control request type {request[0]:#x}")
             return False
 
-        # Accept the following possible replies from handle_NNN_control_xfer():
+        # Expecting any of the following possible replies from
+        # handle_NNN_control_xfer():
         #
         # True - Continue transfer, no data
         # False - STALL transfer
         # Object with buffer interface - submit this data for the control transfer
-        if isinstance(result, bool):
-            return result
-
-        return self._usbd.control_xfer(request, result)
+        return result
 
 
 class USBInterface:
@@ -609,24 +607,19 @@ class USBInterface:
             raise RuntimeError("Not open")
         _inst._submit_xfer(ep_addr, data, done_cb)
 
-    def set_ep_stall(self, ep_addr, stall):
-        # Set or clear endpoint STALL state, according to the bool "stall" parameter.
+    def stall(self, ep_addr, *args):
+        # Set or get the endpoint STALL state.
         #
-        # Generally endpoint STALL is handled automatically by TinyUSB, but
-        # there are some device classes that need to explicitly stall or unstall
-        # an endpoint under certain conditions.
+        # To get endpoint stall stage, call with a single argument.
+        # To set endpoint stall state, call with an additional boolean
+        # argument to set or clear.
+        #
+        # Generally endpoint STALL is handled automatically, but there are some
+        # device classes that need to explicitly stall or unstall an endpoint
+        # under certain conditions.
         if not self._open or ep_addr not in _inst._eps:
             raise RuntimeError
-        _inst._usbd.set_ep_stall(ep_addr, stall)
-
-    def get_ep_stall(self, ep_addr):
-        # Get the current endpoint STALL state.
-        #
-        # Endpoint can be stalled/unstalled by host, TinyUSB stack, or calls to
-        # set_ep_stall().
-        if not self._open or ep_addr not in get_usbdevice()._eps:
-            raise RuntimeError
-        return _inst._usbd.get_ep_stall(ep_addr)
+        _inst._usbd.stall(ep_addr, *args)
 
 
 __version__ = '0.1.0'
