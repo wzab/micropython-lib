@@ -56,9 +56,7 @@ class _USBDevice:
     def __init__(self):
         self._eps = {}  # Mapping from endpoint address to interface object
         self._ep_cbs = {}  # Mapping from endpoint address to Optional[xfer callback]
-        self._itfs = (
-            []
-        )  # List of USBInterfaces (NOTE: each of these may contain >1 USB Interface descriptor)
+        self._itfs = []  # List of USBInterfaces (NOTE: each of these may contain >1 USB Interface descriptor)
         self._desc = Descriptor()
         self.include_static = True  # Include static devices when enumerating?
 
