@@ -172,7 +172,9 @@ class _USBDevice:
         #
         # This normally only happens during enumeration, but may happen more than
         # once (the host will first ask for a minimum length descriptor, and then
-        # use the length field request to request the whole thing).
+        # use the length field request to request the whole thing). Therefore, the
+        # behaviour must be idempotent (the same descriptor returned, and the state
+        # unchanged by calling it.)
         #
         # Note: Currently only one configuration per device is supported.
 
@@ -189,7 +191,6 @@ class _USBDevice:
             self._l = _STD_DESC_CONFIG_LEN
 
         self._eps = {}  # rebuild endpoint mapping as we enumerate each interface
-        self._ep_cbs = {}
         itf_num = static.itf_max
         ep_num = max(static.ep_max, 1)  # Endpoint 0 always reserved for control
 
@@ -206,8 +207,9 @@ class _USBDevice:
                 if dt == _STD_DESC_ENDPOINT_TYPE:
                     ep_addr = d.b[offs + 2]
                     self._eps[ep_addr] = itf
-                    self._ep_cbs[ep_addr] = None  # no pending callback
-
+                    if ep_addr not in self._ep_cbs:
+                        # add a callback placeholder if one doesn't already exist
+                        self._ep_cbs[ep_addr] = None
                     # Find the next ep_num that can be used for next interface
                     # (Note this does skip some potential EPs, as each ep_num can be both IN and OUT)
                     ep_num = max((ep_addr & ~EP_IN_FLAG) + 1, ep_num)
@@ -336,8 +338,7 @@ class _USBDevice:
         # Callback when the USB device is reset by the host
 
         # Cancel outstanding transfer callbacks
-        for k in self._ep_cbs.keys():
-            self._ep_cbs[k] = None
+        self._ep_cbs = {}
 
         # Allow interfaces to respond to the reset
         for itf in self._itfs:
