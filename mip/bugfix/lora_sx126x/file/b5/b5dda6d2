@@ -86,4 +86,4 @@ class SyncModem:
             time.sleep_ms(1)
 
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'

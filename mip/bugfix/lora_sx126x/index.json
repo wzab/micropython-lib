@@ -887,6 +887,21 @@
     },
     {
       "name": "lora-sx126x",
+      "version": "0.1.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.2"
+        ],
+        "6": [
+          "0.1.2"
+        ]
+      }
+    },
+    {
+      "name": "lora-sx127x",
       "version": "0.1.1",
       "author": "",
       "description": "",
@@ -901,32 +916,17 @@
       }
     },
     {
-      "name": "lora-sx127x",
-      "version": "0.1.0",
-      "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {
-        "py": [
-          "0.1.0"
-        ],
-        "6": [
-          "0.1.0"
-        ]
-      }
-    },
-    {
       "name": "lora-sync",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.1.1"
         ],
         "6": [
-          "0.1.0"
+          "0.1.1"
         ]
       }
     },
@@ -1757,5 +1757,5 @@
     }
   ],
   "v": 1,
-  "updated": 1708385768
+  "updated": 1708408830
 }
