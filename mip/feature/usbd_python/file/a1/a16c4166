@@ -1,8 +1,0 @@
-from .device import get_usbdevice, USBInterface
-from .hid import HIDInterface
-from .midi import MIDIInterface, MIDIUSB
-from .cdc import CDC
-from . import utils
-
-
-__version__ = '0.1.0'

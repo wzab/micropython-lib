@@ -167,16 +167,16 @@
     },
     {
       "name": "aiohttp",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "author": "",
       "description": "HTTP client module for MicroPython asyncio module",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.0.1"
+          "0.0.2"
         ],
         "6": [
-          "0.0.1"
+          "0.0.2"
         ]
       }
     },
@@ -287,16 +287,16 @@
     },
     {
       "name": "bundle-networking",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": "",
       "description": "Common networking packages for all network-capable deployments of MicroPython.",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.2.0"
         ],
         "6": [
-          "0.1.0"
+          "0.2.0"
         ]
       }
     },
@@ -647,16 +647,16 @@
     },
     {
       "name": "hmac",
-      "version": "3.4.3",
+      "version": "3.4.4",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "3.4.3"
+          "3.4.4"
         ],
         "6": [
-          "3.4.3"
+          "3.4.4"
         ]
       }
     },
@@ -887,6 +887,21 @@
     },
     {
       "name": "lora-sx126x",
+      "version": "0.1.2",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.2"
+        ],
+        "6": [
+          "0.1.2"
+        ]
+      }
+    },
+    {
+      "name": "lora-sx127x",
       "version": "0.1.1",
       "author": "",
       "description": "",
@@ -901,32 +916,17 @@
       }
     },
     {
-      "name": "lora-sx127x",
-      "version": "0.1.0",
-      "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {
-        "py": [
-          "0.1.0"
-        ],
-        "6": [
-          "0.1.0"
-        ]
-      }
-    },
-    {
       "name": "lora-sync",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.1.1"
         ],
         "6": [
-          "0.1.0"
+          "0.1.1"
         ]
       }
     },
@@ -1247,16 +1247,16 @@
     },
     {
       "name": "requests",
-      "version": "0.8.1",
+      "version": "0.9.0",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.8.1"
+          "0.9.0"
         ],
         "6": [
-          "0.8.1"
+          "0.9.0"
         ]
       }
     },
@@ -1322,16 +1322,16 @@
     },
     {
       "name": "ssl",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.2.0"
         ],
         "6": [
-          "0.1.0"
+          "0.2.0"
         ]
       }
     },
@@ -1397,16 +1397,16 @@
     },
     {
       "name": "tarfile-write",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": "",
       "description": "Adds write (create/append) support to tarfile.",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.1"
+          "0.1.2"
         ],
         "6": [
-          "0.1.1"
+          "0.1.2"
         ]
       }
     },
@@ -1562,16 +1562,16 @@
     },
     {
       "name": "umqtt.simple",
-      "version": "1.3.4",
+      "version": "1.4.0",
       "author": "",
       "description": "Lightweight MQTT client for MicroPython.",
       "license": "MIT",
       "versions": {
         "py": [
-          "1.3.4"
+          "1.4.0"
         ],
         "6": [
-          "1.3.4"
+          "1.4.0"
         ]
       }
     },
@@ -1637,16 +1637,16 @@
     },
     {
       "name": "urllib.urequest",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.6.0"
+          "0.7.0"
         ],
         "6": [
-          "0.6.0"
+          "0.7.0"
         ]
       }
     },
@@ -1772,5 +1772,5 @@
     }
   ],
   "v": 1,
-  "updated": 1705387784
+  "updated": 1709102618
 }
