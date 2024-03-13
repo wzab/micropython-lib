@@ -208,7 +208,7 @@ class CDC(io.IOBase, USBInterface):
     ### USB Interface Implementation
     ###
 
-    def descriptor_config(self, desc, itf_num, ep_num, strs):
+    def desc_cfg(self, desc, itf_num, ep_num, strs):
         # CDC needs a Interface Association Descriptor (IAD) wrapping two interfaces: Control & Data interfaces
         desc.interface_assoc(itf_num, 2, _INTERFACE_CLASS_CDC, _INTERFACE_SUBCLASS_CDC)
 

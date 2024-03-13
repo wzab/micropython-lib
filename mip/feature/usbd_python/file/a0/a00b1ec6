@@ -129,7 +129,7 @@ class MIDIInterface(USBInterface):
         # Override this function in a subclass in order to react to MIDI data
         pass
 
-    def descriptor_config(self, desc, itf_num, ep_num, strs):
+    def desc_cfg(self, desc, itf_num, ep_num, strs):
         # Start by registering a USB Audio Control interface, that is required to point to the
         # actual MIDI interface
         desc.interface(itf_num, 0, _INTERFACE_CLASS_AUDIO, _INTERFACE_SUBCLASS_AUDIO_CONTROL)

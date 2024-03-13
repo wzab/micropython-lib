@@ -8,7 +8,7 @@ from io import BytesIO
 from .utils import split_bmRequestType, EP_IN_FLAG, Descriptor
 
 # USB descriptor types
-_STD_DESC_DEVICE_TYPE = const(0x1)
+_STD_DESC_DEV_TYPE = const(0x1)
 _STD_DESC_CONFIG_TYPE = const(0x2)
 _STD_DESC_STRING_TYPE = const(0x3)
 _STD_DESC_INTERFACE_TYPE = const(0x4)
@@ -48,7 +48,7 @@ def get():
     # MicroPython _USBDevice object
     #
     # (note this isn't the low-level object, the low-level object is
-    # _get()._usbd.)
+    # get()._usbd.)
     global _dev
     if not _dev:
         _dev = _USBDevice()
@@ -64,12 +64,12 @@ class _USBDevice:
         self._itfs = {}  # Mapping from interface number to interface object, set by init()
         self._eps = {}  # Mapping from endpoint address to interface object, set by _open_cb()
         self._ep_cbs = {}  # Mapping from endpoint address to Optional[xfer callback]
-        self._usbd = machine.USBD()  # low-level USBD object
+        self._usbd = machine.USBDevice()  # low-level API
 
     def init(  # noqa: PLR0913 TODO: find a way to pass fewer arguments without wasting RAM
         self,
         *itfs,
-        static_drivers=False,
+        builtin_drivers=False,
         active=True,
         manufacturer_str=None,
         product_str=None,
@@ -88,26 +88,31 @@ class _USBDevice:
         # device and configuration descriptor fields
 
         _usbd = self._usbd
-        static = _usbd.static
 
-        # Putting None for any strings that should fall back to the "static" value
+        _usbd.active(False)
+
+        builtin = _usbd.builtin_driver = (
+            _usbd.BUILTIN_DEFAULT if builtin_drivers else _usbd.BUILTIN_NONE
+        )
+
+        # Putting None for any strings that should fall back to the "built-in" value
         # Indexes in this list depends on _USB_STR_MANUF, _USB_STR_PRODUCT, _USB_STR_SERIAL
         strs = [None, manufacturer_str, product_str, serial_str]
 
         # Build the device descriptor
         FMT = "<BBHBBBBHHHBBBB"
         # read the static descriptor fields
-        f = struct.unpack(FMT, static.desc_device)
+        f = struct.unpack(FMT, builtin.desc_dev)
 
         def maybe_set(value, idx):
-            # Override a numeric descriptor value or keep static value f[idx] if 'value' is None
+            # Override a numeric descriptor value or keep builtin value f[idx] if 'value' is None
             if value is not None:
                 return value
             return f[idx]
 
-        # Either copy each descriptor field directly from the static device descriptor, or 'maybe'
+        # Either copy each descriptor field directly from the builtin device descriptor, or 'maybe'
         # set it to the custom value from the object
-        descriptor_device = struct.pack(
+        desc_dev = struct.pack(
             FMT,
             f[0],  # bLength
             f[1],  # bDescriptorType
@@ -128,16 +133,11 @@ class _USBDevice:
         # Iterate interfaces to build the configuration descriptor
 
         # Keep track of the interface and endpoint indexes
-        if static_drivers:
-            itf_num = static.itf_max
-            ep_num = max(static.ep_max, 1)  # Endpoint 0 always reserved for control
-            while len(strs) < static.str_max:
-                strs.append(None)  # Reserve other string indexed used by static drivers
-            initial_cfg = static.desc_cfg
-        else:
-            itf_num = 0
-            ep_num = 1
-            initial_cfg = b"\x00" * _STD_DESC_CONFIG_LEN  # Reserved space for config descriptor
+        itf_num = builtin.itf_max
+        ep_num = max(builtin.ep_max, 1)  # Endpoint 0 always reserved for control
+        while len(strs) < builtin.str_max:
+            strs.append(None)  # Reserve other string indexes used by builtin drivers
+        initial_cfg = builtin.desc_cfg or (b"\x00" * _STD_DESC_CONFIG_LEN)
 
         self._itfs = {}
 
@@ -146,14 +146,14 @@ class _USBDevice:
         desc = Descriptor(None)
         desc.append(initial_cfg)
         for itf in itfs:
-            itf.descriptor_config(desc, 0, 0, [])
+            itf.desc_cfg(desc, 0, 0, [])
 
         # Allocate the real Descriptor helper to write into it, starting
         # after the standard configuration descriptor
         desc = Descriptor(bytearray(desc.o))
         desc.append(initial_cfg)
         for itf in itfs:
-            itf.descriptor_config(desc, itf_num, ep_num, strs)
+            itf.desc_cfg(desc, itf_num, ep_num, strs)
 
             for _ in range(itf.num_itfs()):
                 self._itfs[itf_num] = itf  # Mapping from interface numbers to interfaces
@@ -191,18 +191,16 @@ class _USBDevice:
             max_power_ma,
         )
 
-        # Initialise the USB device
-        _usbd.init(
-            descriptor_device,
+        _usbd.config(
+            desc_dev,
             desc.b,
             strs,
-            static_drivers,
             self._open_itf_cb,
             self._reset_cb,
             self._control_xfer_cb,
             self._xfer_cb,
-            active,
         )
+        _usbd.active(active)
 
     def _open_itf_cb(self, desc):
         # Singleton callback from TinyUSB custom class driver, when USB host does
@@ -266,7 +264,7 @@ class _USBDevice:
         if self._ep_cbs[ep_addr]:
             raise RuntimeError("xfer_pending")
 
-        # USBD callback may be called immediately, before Python execution
+        # USBDevice callback may be called immediately, before Python execution
         # continues, so set it first.
         #
         # To allow xfer_pending checks to work, store True instead of None.
@@ -336,7 +334,7 @@ class USBInterface:
     def __init__(self):
         self._open = False
 
-    def descriptor_config(self, desc, itf_num, ep_num, strs):
+    def desc_cfg(self, desc, itf_num, ep_num, strs):
         # Function to build configuration descriptor contents for this interface
         # or group of interfaces. This is called on each interface from
         # USBDevice.init().
@@ -381,7 +379,7 @@ class USBInterface:
 
     def num_itfs(self):
         # Return the number of actual USB Interfaces represented by this object
-        # (as set in descriptor_config().)
+        # (as set in desc_cfg().)
         #
         # Only needs to be overriden if implementing a USBInterface class that
         # represents more than one USB Interface descriptor (i.e. MIDI), or an
@@ -390,7 +388,7 @@ class USBInterface:
 
     def num_eps(self):
         # Return the number of USB Endpoint numbers represented by this object
-        # (as set in descriptor_config().)
+        # (as set in desc_cfg().)
         #
         # Note for each count returned by this function, the interface may
         # choose to have both an IN and OUT endpoint (i.e. IN flag is not
