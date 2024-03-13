@@ -386,7 +386,7 @@ class CDC(io.IOBase, USBInterface):
             b = bytearray(self._rb.readable())
 
         n = self._readinto(b, start)
-        if not b:
+        if not n:
             return None
         if n < len(b):
             return b[:n]
@@ -420,7 +420,7 @@ class CDC(io.IOBase, USBInterface):
         if req == _MP_STREAM_POLL:
             return (
                 (_MP_STREAM_POLL_WR if (arg & _MP_STREAM_POLL_WR) and self._wb.writable() else 0)
-                | (_MP_STREAM_POLL_RD if (arg & _MP_STREAM_POLL_RD) and self._rd.readable() else 0)
+                | (_MP_STREAM_POLL_RD if (arg & _MP_STREAM_POLL_RD) and self._rb.readable() else 0)
                 |
                 # using the USB level "open" (i.e. connected to host) for !HUP, not !DTR (port is open)
                 (_MP_STREAM_POLL_HUP if (arg & _MP_STREAM_POLL_HUP) and not self.is_open() else 0)
