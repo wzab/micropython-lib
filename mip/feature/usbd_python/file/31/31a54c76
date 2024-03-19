@@ -218,8 +218,6 @@ class _USBDevice:
         # - Find the highest numbered interface provided to the callback
         #   (which will be the first interface, unless we're scanning
         #   multiple interfaces inside an IAD.)
-        self._eps = {}
-        self._ep_cbs = {}
         offs = 0
         max_itf = itf_num
         while offs < len(desc):
@@ -246,13 +244,13 @@ class _USBDevice:
     def _reset_cb(self):
         # Callback when the USB device is reset by the host
 
-        # Cancel outstanding transfer callbacks
-        for k in self._ep_cbs.keys():
-            self._ep_cbs[k] = None
-
         # Allow interfaces to respond to the reset
         for itf in self._itfs.values():
             itf.handle_reset()
+
+        # Rebuilt when host re-enumerates
+        self._eps = {}
+        self._ep_cbs = {}
 
     def _submit_xfer(self, ep_addr, data, done_cb=None):
         # Singleton function to submit a USB transfer (of any type except control).
