@@ -302,16 +302,16 @@
     },
     {
       "name": "cbor2",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "1.0.0"
         ],
         "6": [
-          "0.1.0"
+          "1.0.0"
         ]
       }
     },
@@ -527,16 +527,16 @@
     },
     {
       "name": "gzip",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "",
       "description": "",
       "license": "MIT",
       "versions": {
         "py": [
-          "1.0.0"
+          "1.0.1"
         ],
         "6": [
-          "1.0.0"
+          "1.0.1"
         ]
       }
     },
@@ -762,21 +762,6 @@
         ],
         "6": [
           "0.2.3"
-        ]
-      }
-    },
-    {
-      "name": "json",
-      "version": "0.1.0",
-      "author": "",
-      "description": "",
-      "license": "MIT",
-      "versions": {
-        "py": [
-          "0.1.0"
-        ],
-        "6": [
-          "0.1.0"
         ]
       }
     },
@@ -1277,16 +1262,16 @@
     },
     {
       "name": "senml",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": "",
       "description": "SenML serialisation for MicroPython.",
       "license": "MIT",
       "versions": {
         "py": [
-          "0.1.0"
+          "0.1.1"
         ],
         "6": [
-          "0.1.0"
+          "0.1.1"
         ]
       }
     },
@@ -1651,7 +1636,82 @@
       }
     },
     {
-      "name": "usbd",
+      "name": "usb-device",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "usb-device-cdc",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "usb-device-hid",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "usb-device-keyboard",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "usb-device-midi",
+      "version": "0.1.0",
+      "author": "",
+      "description": "",
+      "license": "MIT",
+      "versions": {
+        "py": [
+          "0.1.0"
+        ],
+        "6": [
+          "0.1.0"
+        ]
+      }
+    },
+    {
+      "name": "usb-device-mouse",
       "version": "0.1.0",
       "author": "",
       "description": "",
@@ -1772,5 +1832,5 @@
     }
   ],
   "v": 1,
-  "updated": 1710811526
+  "updated": 1711508933
 }
