@@ -49,6 +49,9 @@ _USB_STR_MANUF = const(0x01)
 _USB_STR_PRODUCT = const(0x02)
 _USB_STR_SERIAL = const(0x03)
 
+# Error constant to match mperrno.h
+_MP_EINVAL = const(22)
+
 _dev = None  # Singleton _Device instance
 
 
