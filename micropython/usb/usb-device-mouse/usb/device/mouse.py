@@ -102,6 +102,8 @@ _MOUSE_REPORT_DESC = bytes(
         0x30,  # Usage (X),
         0x09,
         0x31,  # Usage (Y),
+        0x09,
+        0x38,  # Usage (Wheel) ,
         0x15,
         0x81,  # Logical Minimum (-127),
         0x25,
